@@ -3,6 +3,7 @@ This project details the process of viewing/adding Timesheets, using a locally s
 
 ## The Database
 Within the database, there are a couple of tables:
+
 *People*
 - UserID -- email(?), unique identifier that determines who a person is
 - First Name
