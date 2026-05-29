@@ -41,6 +41,13 @@ The website, which can only be accessed by admin, can perform these functions:
 **05/28/2026**:
 - Created/formatted the database
 - Added a login page, logout page, and create new user page
+**05/29/2026**:
+- Worked on creating a contact list
+  - For each person in the contact list, you can view their names and emails (and is already hyperlinked to automatically email when clicked)
+  - You can also delete each person (if there are no issues such as open timesheets for that person)
+  - If a person is a client, you can view a list of their caregivers/their emails. You can also assign and delete client-caregiver relationships
+- Fixed some bugs within the code to make it more secure (like requiring all fields for adding users and checking for login at each page of the website)
+- Updated the database to match the new description for timesheets (removed the Timesheet #)
 
 ## HIPAA Considerations
 - Admin passwords are hashed within the database (so they can't be viewed by anyone)
@@ -48,7 +55,7 @@ The website, which can only be accessed by admin, can perform these functions:
 - Two options for storing the database:
   1. Everything is done locally (this means there can be multiple users/admin accounts, but it's all done on 1 laptop/computer, with code libraries installed that monitor/audits changes made)
      - Pros: No additional costs (don't have to pay any subscriptions)
-     - Cons: Only one laptop/user can use it at a time
+     - Cons: Only one laptop can use it. If another person would want to use it on their own device, the original laptop would have to push the database to a service (like GitHub), and the second person would have to pull the database. You would need to constantly do things like pushing/pulling whenever changes are made
   2. Use a HIPAA-compliant database
      - Pros: Mutliple users can use it (if one laptop uses it, another laptop gets updated instantly)
      - Cons: Can be very expensive
