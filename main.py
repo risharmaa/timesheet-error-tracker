@@ -166,6 +166,10 @@ def contactList():
 
 @app.route("/deleteuser/<path:email>")
 def delete_user(email):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
     # first check if the person that is trying to be deleted is the user
     if email == session['user']['username']:
         flash("You cannot delete yourself.", "error")
@@ -176,7 +180,7 @@ def delete_user(email):
     open_check = cursor.fetchall()
     if open_check:
         # this means that there exists a timesheet error that is still open/not closed yet!
-        flash("You can not close a user with an open timesheet error.", "error")
+        flash("You can not delete a user with an open timesheet error.", "error")
         return redirect('/contactlist')
     
     #figure out the type of user that we're trying to delete
@@ -199,6 +203,46 @@ def delete_user(email):
     flash(deletion, "success")
     return redirect("/contactlist")
 
+@app.route("/addcaregiver/<path:email>", methods = ["GET"])
+def assign_caregiver(email):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
+    cursor = mydb.cursor(dictionary=True)
+    # generate a list of caregivers (that aren't already assigned to the client)
+    cursor.execute("SELECT * FROM people WHERE userid = %s", (email,))
+    client = cursor.fetchone()
+    cursor.execute("SELECT DISTINCT people.fname, people.lname, people.userid FROM people WHERE people.userid IN (SELECT caregiverid FROM clients) AND people.userid NOT IN (SELECT caregiverid FROM clients WHERE clientid = %s)", (email,))
+    c_list = cursor.fetchall()
+
+    add_caregiver = request.args.get('add_caregiver')
+    if add_caregiver is not None:
+        cursor.execute("INSERT INTO clients (clientid, caregiverid) VALUES (%s, %s)", (email, add_caregiver))
+        mydb.commit()
+        added = "You have successfully added a caregiver to " + client['fname'] + " " + client['lname'] + "!"
+        flash(added, "success")
+        return redirect("/contactlist")
+    
+
+    cursor.execute("SELECT people.fname, people.lname, people.userid, clientid FROM clients INNER JOIN people ON caregiverid = userid WHERE clientid = %s", (email,))
+    r_list = cursor.fetchall()
+    remove_caregiver = request.args.get('remove_caregiver')
+    if remove_caregiver is not None:
+        # check if there's any open timesheets
+        cursor.execute("SELECT * FROM timesheet WHERE clientid = %s AND caregiverid = %s AND received = FALSE", (email, remove_caregiver))
+        timesheet_check = cursor.fetchall()
+        if timesheet_check:
+            flash("You can not remove a client-caregiver relationship with an open timesheet error.", "error")
+            return redirect(url_for("assign_caregiver", email=email))
+        else:
+            # delete any client-caregiver relationships
+            cursor.execute("DELETE FROM clients WHERE clientid = %s AND caregiverid = %s", (email, remove_caregiver))
+            removed = "You have successfully removed a caregiver from " + client['fname'] + " " + client['lname'] + "!"
+            flash(removed, "success")
+        return redirect("/contactlist")
+
+    return render_template("assign_caregiver.html", c_list = c_list, client = client, r_list = r_list)
 
 
 if __name__ == "__main__":

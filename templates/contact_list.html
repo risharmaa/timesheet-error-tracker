@@ -38,6 +38,7 @@
                     <li><a href = "mailto:{{c.userid}}">{{c.fname}} {{c.lname}} </a></li>
                 {% endfor %}
                 </ul>
+                <p><a href = "/addcaregiver/{{person.userid}}"><button>Assign Caregivers</button></a></p>
             {% endif %}
 
             <p><a href = "/deleteuser/{{person.userid}}"><button>Delete User</button></a></p>

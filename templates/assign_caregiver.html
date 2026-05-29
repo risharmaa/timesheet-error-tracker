@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Assign Caregivers</title>
+    </head>
+
+    <body>
+        <h1>Edit Caregiver Assignments for {{client.fname}} {{client.lname}}</h1>
+        <form action="/addcaregiver/{{client.userid}}" method = "GET">
+        <label for="name">Add Caregiver:</label>
+        <select name="add_caregiver">
+            <option value = "">------</option>
+            {% for c in c_list %}
+                <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" name="submit">
+        </form>
+
+        <form action="/addcaregiver/{{client.userid}}" method = "GET">
+        <label for="name">Remove Caregiver:</label>
+        <select name="remove_caregiver">
+            <option value = "">------</option>
+            {% for r in r_list %}
+                <option value="{{r.userid}}">{{r.fname}} {{r.lname}}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" name="submit">
+        </form>
+
+        <a href = "/">Home Page</a>
+        <a href = "/logout">Logout</a>
+        <a href = "/adduser">Add User</a>
+    </body>
+
+</html>
