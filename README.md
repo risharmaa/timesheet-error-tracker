@@ -20,7 +20,6 @@ Within the database, there are a couple of tables:
 - Password (allows them to login)
 
 *Timesheet*
-- TimesheetID (Number associated with a specific timesheet)
 - ClientID (associated with the people table)
 - CaregiverID (associated with the people table)
 - Date
@@ -28,6 +27,7 @@ Within the database, there are a couple of tables:
 - Timesheet sent (Y/N)
 - Sent via E-Signature/Paper Timesheet
 - Date Received
+- *To determine a specific timesheet, we'll use a combination of Client IDs, CaregiverIDs, and the Date*
 
 ## The Website
 The website, which can only be accessed by admin, can perform these functions:
