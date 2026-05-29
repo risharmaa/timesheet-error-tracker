@@ -30,7 +30,6 @@ CREATE TABLE admin (
 
 DROP TABLE IF EXISTS timesheet;
 CREATE TABLE timesheet (
-  timesheetid   INTEGER PRIMARY KEY AUTO_INCREMENT,
   clientid      varchar(254),
   caregiverid   varchar(254),
   date          DATE,
@@ -39,6 +38,7 @@ CREATE TABLE timesheet (
   received      BOOLEAN DEFAULT FALSE,
   type          varchar(50),
   day_r         DATE,
+  primary key (clientid, caregiverid, date),
   foreign key (clientid) references people(userid),
   foreign key (caregiverid) references people(userid)
 );
@@ -55,4 +55,4 @@ INSERT INTO people VALUES ('caregiver2@gmail.com', 'Test2', 'Caregiver', 'Caregi
 INSERT INTO clients VALUES ('client@gmail.com', 'caregiver1@gmail.com');
 INSERT INTO clients VALUES ('client@gmail.com', 'caregiver2@gmail.com');
 --adding a timesheet error
-INSERT INTO timesheet VALUES (1, 'client@gmail.com', 'caregiver1@gmail.com', '2026-05-28', 'Out of Window Clock-out', FALSE, FALSE, NULL, NULL);
+INSERT INTO timesheet VALUES ('client@gmail.com', 'caregiver1@gmail.com', '2026-05-28', 'Out of Window Clock-out', FALSE, FALSE, NULL, NULL);

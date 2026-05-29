@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Contact List</title>
+    </head>
+    <body>
+        <form action="/contactlist" method = "GET">
+        <label for="email">Email:</label>
+        <input type="text" name="email"><br>
+        <label for="fname">First Name:</label>
+        <input type="text" name="fname" ><br>
+        <label for="lname">Last Name:</label>
+        <input type="text" name="lname"><br>
+        <label for="type">Type of User:</label>
+        <select name="type" id = "type">
+            <option value="">-----</option>
+            <option value="Admin">Admin</option>
+            <option value="Client">Client</option>
+            <option value="Caregiver">Caregiver</option>
+        </select><br>
+        <button type = "submit"> Search </button>
+        </form>
+        <p> </p>
+        {% for person in contacts %}
+        <details>
+            <summary>{{person['fname']}} {{person['lname']}}</summary>
+            <p>Type of User: {{person['type']}}</p>
+            <p>Email: <a href = "mailto:{{person['userid']}}">{{person['userid']}}</a></p>
+            <a href = "/deleteuser/{{person['userid']}}"><button>Delete User</button></a>
+        </details>
+        {% endfor %}
+
+        <a href = "/">Home Page</a>
+        <a href = "/logout">Logout</a>
+        <a href = "/adduser">Add User</a>
+    </body>
+</html>

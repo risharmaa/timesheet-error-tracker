@@ -9,20 +9,20 @@
         <table>
           <tr>
             <td><label for="email">Email:</label></td>
-            <td><input type="text" name="email" ><br></td>
+            <td><input type="text" name="email" required><br></td>
           </tr>
           <tr>
             <td><label for="fname">First Name:</label></td>
-            <td><input type="text" name="fname" ><br></td>
+            <td><input type="text" name="fname" required><br></td>
           </tr>
           <tr>
             <td><label for="lname">Last Name:</label></td>
-            <td><input type="text" name="lname" ><br></td>
+            <td><input type="text" name="lname" required><br></td>
           </tr>
           <tr>
             <td><label for="type">Type of User:</label></td>
-            <td><select name="type" id = "type">
-                <option value="----"></option>
+            <td><select name="type" id = "type" required>
+                <option value="">-----</option>
                 <option value="Admin">Admin</option>
                 <option value="Client">Client</option>
                 <option value="Caregiver">Caregiver</option>
@@ -31,5 +31,8 @@
         </table>
       <input type="submit" name="submit">
       </form>
+      <a href = "/">Home Page</a>
+      <a href = "/logout">Logout</a>
+      <a href = "/contactlist">Contact List</a>
     </body>
 </html>
