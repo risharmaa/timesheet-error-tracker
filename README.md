@@ -41,6 +41,7 @@ The website, which can only be accessed by admin, can perform these functions:
 **05/28/2026**:
 - Created/formatted the database
 - Added a login page, logout page, and create new user page
+  
 **05/29/2026**:
 - Worked on creating a contact list
   - For each person in the contact list, you can view their names and emails (and is already hyperlinked to automatically email when clicked)
