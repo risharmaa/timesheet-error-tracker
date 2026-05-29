@@ -90,6 +90,14 @@ def adduser():
         fname = request.form.get("fname")
         lname = request.form.get("lname")
         kind = request.form.get("type")
+
+        # check if the email already exists first
+        cursor.execute("SELECT * FROM people WHERE userid = %s", (username,))
+        check = cursor.fetchall()
+        if check:
+            flash("A user with the same email already exists.", "error")
+            return redirect("/adduser")
+
         # add the new person into the database
         cursor.execute("INSERT INTO people (userid, fname, lname, type) VALUES (%s, %s, %s, %s)", (username, fname, lname, kind))
         mydb.commit()
@@ -148,6 +156,11 @@ def contactList():
     else:
         cursor.execute("SELECT * FROM people")
     contacts = cursor.fetchall()
+
+    for item in contacts:
+        if item["type"] == "Client":
+            cursor.execute("SELECT people.fname, people.lname, people.userid, clientid FROM clients INNER JOIN people ON caregiverid = userid WHERE clientid = %s", (item['userid'],))
+            item["caregiver"] = cursor.fetchall()
 
     return render_template("contact_list.html", contacts = contacts)
 

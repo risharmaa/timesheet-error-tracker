@@ -23,10 +23,25 @@
         <p> </p>
         {% for person in contacts %}
         <details>
-            <summary>{{person['fname']}} {{person['lname']}}</summary>
-            <p>Type of User: {{person['type']}}</p>
-            <p>Email: <a href = "mailto:{{person['userid']}}">{{person['userid']}}</a></p>
-            <a href = "/deleteuser/{{person['userid']}}"><button>Delete User</button></a>
+            <summary>{{person.fname}} {{person.lname}}</summary>
+            <ul>
+            <p>Type of User: {{person.type}}</p>
+            <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
+
+            {% if person.type == "Client" %}
+                <h3> Caregivers: </h3>
+                <ul>
+                {% if not person['caregiver'] %}
+                    <li>No Caregivers Assigned.</li>
+                {% endif %}
+                {% for c in person['caregiver'] %}
+                    <li><a href = "mailto:{{c.userid}}">{{c.fname}} {{c.lname}} </a></li>
+                {% endfor %}
+                </ul>
+            {% endif %}
+
+            <p><a href = "/deleteuser/{{person.userid}}"><button>Delete User</button></a></p>
+            </ul>
         </details>
         {% endfor %}
 
