@@ -49,6 +49,16 @@ The website, which can only be accessed by admin, can perform these functions:
 - Fixed some bugs within the code to make it more secure (like requiring all fields for adding users and checking for login at each page of the website)
 - Updated the database to match the new description for timesheets (removed the Timesheet #)
 
+### Upcoming Tasks:
+- create a timesheet error
+- view all timesheet errors
+- update information for all users (emails, names, etc.)
+- be able to have the admin update their own password
+### Additional features(?)
+- create 2FA for changing your own password (to ensure security)
+- Add search features for dropdowns (like assigning caregivers to a client)
+- Turn the contact list into tabs (one for all users, another for clients, another for caregivers, and admin)
+
 ## HIPAA Considerations
 - Admin passwords are hashed within the database (so they can't be viewed by anyone)
 - Users get automatically logged out if they're inactive for 5 minutes
