@@ -108,6 +108,8 @@ def contactList():
     # check if user is logged in:
     if 'user' not in session:
         return redirect("/login")
+
+    # use this to search/filter for specific people!
     cursor = mydb.cursor(dictionary=True)
     fname = request.args.get('fname')
     lname = request.args.get('lname')
@@ -149,6 +151,40 @@ def contactList():
 
     return render_template("contact_list.html", contacts = contacts)
 
+@app.route("/deleteuser/<path:email>")
+def delete_user(email):
+    # first check if the person that is trying to be deleted is the user
+    if email == session['user']['username']:
+        flash("You cannot delete yourself.", "error")
+        return redirect('/contactlist')
+    # next check if the user being deleted has a timesheet that is still open:
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM timesheet WHERE (clientid = %s OR caregiverid = %s) AND received = FALSE", (email, email))
+    open_check = cursor.fetchall()
+    if open_check:
+        # this means that there exists a timesheet error that is still open/not closed yet!
+        flash("You can not close a user with an open timesheet error.", "error")
+        return redirect('/contactlist')
+    
+    #figure out the type of user that we're trying to delete
+    cursor.execute("SELECT type, fname, lname FROM people WHERE userid = %s", (email,))
+    kind = cursor.fetchone()
+    name = kind['fname'] + " " + kind['lname']
+    kind = kind['type']
+    if kind == "Admin":
+        cursor.execute("DELETE FROM admin WHERE adminid = %s", (email,))
+    if kind == "Client":
+        cursor.execute("DELETE FROM timesheet WHERE clientid = %s", (email,))
+        cursor.execute("DELETE FROM clients WHERE clientid = %s", (email,))
+    if kind == "Caregiver":
+        cursor.execute("DELETE FROM timesheet WHERE caregiverid = %s", (email,))
+        cursor.execute("DELETE FROM clients WHERE caregiverid = %s", (email,))
+    cursor.execute("DELETE FROM people WHERE userid = %s", (email,))
+    mydb.commit()
+
+    deletion = "You have successfully deleted " + name + "!"
+    flash(deletion, "success")
+    return redirect("/contactlist")
 
 
 
