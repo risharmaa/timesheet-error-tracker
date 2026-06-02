@@ -10,7 +10,7 @@
         <label for="name">Add Caregiver:</label>
         <select name="add_caregiver">
             <option value = "">------</option>
-            {% for c in c_list %}
+            {% for c in cl_list %}
                 <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
             {% endfor %}
         </select>

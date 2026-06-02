@@ -9,11 +9,21 @@
         <table>
           <tr>
             <td><label for="client">Client:</label></td>
-            <td><input type="text" name="client" required><br></td>
+            <td><select name="client" required>
+            <option value = "">------</option>
+            {% for c in cl_list %}
+                <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
+            {% endfor %}
+            </select></td>
           </tr>
           <tr>
             <td><label for="caregiver">Caregiver:</label></td>
-            <td><input type="text" name="caregiver" required><br></td>
+            <td><select name="caregiver" required>
+            <option value = "">------</option>
+            {% for c in cr_list %}
+                <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
+            {% endfor %}
+            </select></td>
           </tr>
           <tr>
             <td><label for="date">Date:</label></td>

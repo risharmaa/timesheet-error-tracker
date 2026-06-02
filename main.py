@@ -214,7 +214,7 @@ def assign_caregiver(usernum):
     cursor.execute("SELECT * FROM people WHERE usernum = %s", (usernum,))
     client = cursor.fetchone()
     email = client['userid']
-    
+
     cursor.execute("SELECT DISTINCT people.fname, people.lname, people.userid FROM people WHERE people.userid IN (SELECT caregiverid FROM clients) AND people.userid NOT IN (SELECT caregiverid FROM clients WHERE clientid = %s)", (email,))
     c_list = cursor.fetchall()
 
@@ -254,6 +254,13 @@ def create_timesheet():
 
     cursor = mydb.cursor(dictionary=True)
 
+    cursor.execute("SELECT * FROM people WHERE type = 'Client'")
+    cl_list = cursor.fetchall()
+
+    cursor.execute("SELECT * FROM people WHERE type = 'Caregiver'")
+    cr_list = cursor.fetchall()
+
+
     if request.method == "POST":
         # get information from the form
         client = request.form.get("client")
@@ -271,7 +278,7 @@ def create_timesheet():
             flash("You have successfully created a timesheet error!", "success")
             return redirect("/viewtimesheets")
 
-    return render_template("create_timesheet.html")
+    return render_template("create_timesheet.html", cl_list = cl_list, cr_list = cr_list)
     
 @app.route("/viewtimesheets")
 def view_timesheets():
