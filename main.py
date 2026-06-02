@@ -282,14 +282,51 @@ def create_timesheet():
     
 @app.route("/viewtimesheets")
 def view_timesheets():
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
     cursor = mydb.cursor(dictionary=True)
     cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid")
     info = cursor.fetchall()
 
-
-
     return render_template("view_timesheets.html", info = info)
 
+@app.route("/senttimesheet/<num>")
+def sent_timesheet(num):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+    
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("UPDATE timesheet SET sent = TRUE WHERE num = %s", (num,))
+    mydb.commit()
+
+    flash("Timesheet updated to sent.", "success")
+    return redirect("/viewtimesheets")
+
+@app.route("/closetimesheet/<num>", methods = ["GET", "POST"])
+def close_timesheet(num):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
+    cursor = mydb.cursor(dictionary=True)
+
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE num = %s", (num,))
+    info = cursor.fetchone()
+
+    if request.method == "POST":
+        # get information from the form
+        day_r = request.form.get("date")
+        kind = request.form.get("kind")
+
+        cursor.execute("UPDATE timesheet SET received = TRUE, type = %s, day_r = %s WHERE num = %s", (kind, day_r, num))
+        mydb.commit()
+        flash("Timesheet closed.", "success")
+        return redirect("/viewtimesheets")
+    
+    return render_template("close_timesheet.html", info = info)
 
 
 
