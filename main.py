@@ -203,16 +203,18 @@ def delete_user(email):
     flash(deletion, "success")
     return redirect("/contactlist")
 
-@app.route("/addcaregiver/<path:email>", methods = ["GET"])
-def assign_caregiver(email):
+@app.route("/addcaregiver/<usernum>", methods = ["GET"])
+def assign_caregiver(usernum):
     # check if user is logged in:
     if 'user' not in session:
         return redirect("/login")
 
     cursor = mydb.cursor(dictionary=True)
     # generate a list of caregivers (that aren't already assigned to the client)
-    cursor.execute("SELECT * FROM people WHERE userid = %s", (email,))
+    cursor.execute("SELECT * FROM people WHERE usernum = %s", (usernum,))
     client = cursor.fetchone()
+    email = client['userid']
+    
     cursor.execute("SELECT DISTINCT people.fname, people.lname, people.userid FROM people WHERE people.userid IN (SELECT caregiverid FROM clients) AND people.userid NOT IN (SELECT caregiverid FROM clients WHERE clientid = %s)", (email,))
     c_list = cursor.fetchall()
 
@@ -243,6 +245,45 @@ def assign_caregiver(email):
         return redirect("/contactlist")
 
     return render_template("assign_caregiver.html", c_list = c_list, client = client, r_list = r_list)
+
+@app.route("/createtimesheet", methods = ["GET", "POST"])
+def create_timesheet():
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
+    cursor = mydb.cursor(dictionary=True)
+
+    if request.method == "POST":
+        # get information from the form
+        client = request.form.get("client")
+        caregiver = request.form.get("caregiver")
+        reason = request.form.get("reason")
+        date = request.form.get("date")
+        cursor.execute("SELECT * FROM timesheet WHERE clientid = %s AND caregiverid = %s AND date = %s", (client, caregiver, date))
+        check = cursor.fetchall()
+        if check:
+            flash("A timesheet error already exists for this client, caregiver and date.", "error")
+            return redirect("/viewtimesheets")
+        else:
+            cursor.execute("INSERT INTO timesheet (clientid, caregiverid, date, reason) VALUES (%s, %s, %s, %s)", (client, caregiver, date, reason))
+            mydb.commit()
+            flash("You have successfully created a timesheet error!", "success")
+            return redirect("/viewtimesheets")
+
+    return render_template("create_timesheet.html")
+    
+@app.route("/viewtimesheets")
+def view_timesheets():
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid")
+    info = cursor.fetchall()
+
+
+
+    return render_template("view_timesheets.html", info = info)
+
+
 
 
 if __name__ == "__main__":

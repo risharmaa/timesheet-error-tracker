@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>View Timesheets</title>
+    </head>
+    <body>
+        <h1>View Timesheets</h1>
+        {% for timesheet in info %}
+        <details>
+            <summary>{{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} | {{timesheet.crfname}} {{timesheet.crlname}}</summary>
+            <ul>
+            <p>Client email: <a href = "mailto:{{timesheet['clientid']}}">{{timesheet.clientid}}</a></p>
+            <p>Caregiver email: <a href = "mailto:{{timesheet['caregiverid']}}">{{timesheet.caregiverid}}</a></p>
+            {% if not timesheet.send %}
+                <p><a href = "/senttimesheet/{{timesheet.clientid}}/{{timesheet.caregiverid}}/{{timesheet.date}}"><button>Update Timesheet as Sent</button></a></p>
+            {% endif %}
+            {% if not timesheet.received and timesheet.send %}
+                <p><a href = "/closetimesheet/{{timesheet.clientid}}/{{timesheet.caregiverid}}/{{timesheet.date}}"><button>Close Timesheet</button></a></p>
+            {% endif %}
+            </ul>
+        </details>
+        {% endfor %}
+        <a href = "/">Home Page</a>
+      <a href = "/logout">Logout</a>
+      <a href = "/contactlist">Contact List</a>
+      <a href = "/createtimesheet">Create New Timesheet Error</a>
+    </body>
+</html>

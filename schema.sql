@@ -10,6 +10,8 @@ CREATE TABLE people (
   fname     varchar(30),
   lname     varchar(30),
   type      varchar(10),
+  usernum   INTEGER AUTO_INCREMENT,
+  unique key (usernum),
   primary key (userid)
 );
 
@@ -38,21 +40,23 @@ CREATE TABLE timesheet (
   received      BOOLEAN DEFAULT FALSE,
   type          varchar(50),
   day_r         DATE,
+  num           INTEGER AUTO_INCREMENT,
   primary key (clientid, caregiverid, date),
+  unique key (num),
   foreign key (clientid) references people(userid),
   foreign key (caregiverid) references people(userid)
 );
 
 
 -- adding a test admin (for logging in)
-INSERT INTO people VALUES ('admin@gmail.com', 'Test', 'Admin', 'Admin');
+INSERT INTO people VALUES ('admin@gmail.com', 'Test', 'Admin', 'Admin', 1);
 INSERT INTO admin VALUES ('admin@gmail.com', 'pass');
 
 -- adding a test client and 2 caregivers
-INSERT INTO people VALUES ('client@gmail.com', 'Test', 'Client', 'Client');
-INSERT INTO people VALUES ('caregiver1@gmail.com', 'Test1', 'Caregiver', 'Caregiver');
-INSERT INTO people VALUES ('caregiver2@gmail.com', 'Test2', 'Caregiver', 'Caregiver');
+INSERT INTO people VALUES ('client@gmail.com', 'Test', 'Client', 'Client', 2);
+INSERT INTO people VALUES ('caregiver1@gmail.com', 'Test1', 'Caregiver', 'Caregiver', 3);
+INSERT INTO people VALUES ('caregiver2@gmail.com', 'Test2', 'Caregiver', 'Caregiver', 4);
 INSERT INTO clients VALUES ('client@gmail.com', 'caregiver1@gmail.com');
 INSERT INTO clients VALUES ('client@gmail.com', 'caregiver2@gmail.com');
 --adding a timesheet error
-INSERT INTO timesheet VALUES ('client@gmail.com', 'caregiver1@gmail.com', '2026-05-28', 'Out of Window Clock-out', FALSE, FALSE, NULL, NULL);
+INSERT INTO timesheet VALUES ('client@gmail.com', 'caregiver1@gmail.com', '2026-05-28', 'Out of window clock-out', FALSE, FALSE, NULL, NULL, 1);

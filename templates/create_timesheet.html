@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Create New Timesheet</title>
+    </head>
+    <body>
+        <h1>Create Timesheet</h1>
+        <form action="/createtimesheet" method = "POST">
+        <table>
+          <tr>
+            <td><label for="client">Client:</label></td>
+            <td><input type="text" name="client" required><br></td>
+          </tr>
+          <tr>
+            <td><label for="caregiver">Caregiver:</label></td>
+            <td><input type="text" name="caregiver" required><br></td>
+          </tr>
+          <tr>
+            <td><label for="date">Date:</label></td>
+            <td><input type="date" name="date" required><br></td>
+          </tr>
+          <tr>
+            <td><label for="reason">Reason:</label></td>
+            <td><select name="reason" id = "reason" required>
+                <option value="">-----</option>
+                <option value="Out of window clock-in">Out of window clock-in</option>
+                <option value="Out of window clock-out">Out of window clock-out</option>
+                <option value="Clock-in is GPS out of range">Clock-in is GPS out of range</option>
+                <option value="Clock-out is GPS out of range">Clock-out is GPS out of range</option>
+                <option value="Missing clock-in">Missing clock-in</option>
+                <option value="Missing clock-out">Missing clock-out</option>
+                <option value="Tasks not noted">Tasks not noted</option>
+                <option value="Not enough tasks noted">Not enough tasks noted</option>
+            </select></td>
+          </tr>
+        </table>
+      <input type="submit" name="submit">
+      </form>
+      <a href = "/">Home Page</a>
+      <a href = "/logout">Logout</a>
+      <a href = "/contactlist">Contact List</a>
+    </body>
+</html>

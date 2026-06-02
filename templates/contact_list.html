@@ -4,6 +4,8 @@
         <title>Contact List</title>
     </head>
     <body>
+        <h1>Contact List</h1>
+        <h3>Search for contacts:</h3>
         <form action="/contactlist" method = "GET">
         <label for="email">Email:</label>
         <input type="text" name="email"><br>
@@ -38,7 +40,7 @@
                     <li><a href = "mailto:{{c.userid}}">{{c.fname}} {{c.lname}} </a></li>
                 {% endfor %}
                 </ul>
-                <p><a href = "/addcaregiver/{{person.userid}}"><button>Assign Caregivers</button></a></p>
+                <p><a href = "/addcaregiver/{{person.usernum}}"><button>Assign Caregivers</button></a></p>
             {% endif %}
 
             <p><a href = "/deleteuser/{{person.userid}}"><button>Delete User</button></a></p>
