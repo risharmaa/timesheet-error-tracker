@@ -54,7 +54,7 @@ The website, which can only be accessed by admin, can perform these functions:
 - Updated the database to match the new description for timesheets (removed the Timesheet #)
 
 **06/02 & 06/03**:
-- Able to create a timesheet error
+- Able to create, update status to 'sent', and close a timesheet error
 - Can view all timesheet errors
 - Updated the database/schema to change the primary keys/use user numbers in links to make it more secure
 - Fixed bugs with changing caregiver assignments
