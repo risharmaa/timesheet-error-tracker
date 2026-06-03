@@ -28,7 +28,11 @@
             <summary>{{person.fname}} {{person.lname}}</summary>
             <ul>
             <p>Type of User: {{person.type}}</p>
-            <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
+            {% if person.type == "Client" %}
+                <p>Email/Phone Number: {{person.userid}}</p>
+            {% else %}
+                <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
+            {% endif %}
 
             {% if person.type == "Client" %}
                 <h3> Caregivers: </h3>

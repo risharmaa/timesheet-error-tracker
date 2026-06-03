@@ -345,6 +345,33 @@ def close_timesheet(num):
     
     return render_template("close_timesheet.html", info = info)
 
+@app.route("/updatepassword", methods = ["GET", "POST"])
+def update_password():
+
+    if request.method == "POST":
+        # takes in a username and password from a form
+        new = request.form.get("new", "")
+        second = request.form.get("second", "")
+
+        cursor = mydb.cursor(dictionary=True)
+        # searches through the database to find a user with the same username inputted
+        cursor.execute("SELECT people.*, password FROM admin INNER JOIN people ON userid = adminid WHERE adminid = %s", (session['user']['username'],))
+        user = cursor.fetchone()
+
+        if new == second:
+            if new != user['password']:
+                # hash password before updating the database
+                pword = generate_password_hash("pass", method='pbkdf2:sha256')
+                cursor.execute("UPDATE admin SET password = %s WHERE adminid = %s", (pword, session['user']['username']))
+                mydb.commit()
+                flash("Password updated.", "success")
+                return redirect('/')
+            elif new == user['password']:
+                flash("You already have this password.", "error")
+                return redirect('/updatepassword')
+
+    return render_template("update_password.html")
+
 
 
 if __name__ == "__main__":
