@@ -42,8 +42,13 @@ def index():
     if 'user' not in session:
         #automatically reroutes to the login page if the user isn't logged in
         return redirect("/login")
-    else:
-        return render_template("home.html")
+
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE")
+    sent = cursor.fetchall()
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE")
+    waiting = cursor.fetchall()
+    return render_template("home.html", sent = sent, waiting = waiting)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -51,7 +56,6 @@ def login():
         # takes in a username and password from a form
         username = request.form.get("username", "").strip()
         password = request.form.get("password", "")
-        mydb.commit()
         cursor = mydb.cursor(dictionary=True)
         # searches through the database to find a user with the same username inputted
         cursor.execute("SELECT people.*, password FROM admin INNER JOIN people ON userid = adminid WHERE adminid = %s", (username,))
@@ -95,7 +99,7 @@ def adduser():
         cursor.execute("SELECT * FROM people WHERE userid = %s", (username,))
         check = cursor.fetchall()
         if check:
-            flash("A user with the same email already exists.", "error")
+            flash("A user with the same email or phone number already exists.", "error")
             return redirect("/adduser")
 
         # add the new person into the database
@@ -347,6 +351,9 @@ def close_timesheet(num):
 
 @app.route("/updatepassword", methods = ["GET", "POST"])
 def update_password():
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
 
     if request.method == "POST":
         # takes in a username and password from a form

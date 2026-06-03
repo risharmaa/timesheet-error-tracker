@@ -60,7 +60,6 @@ The website, which can only be accessed by admin, can perform these functions:
 - created an update password option 
 
 ### Upcoming Tasks:
-- update information for all users (emails, names, etc.)
 - make it more viewable/easy to use
 - have homepage show timesheet errors that still need to be sent/awaiting
 - have an interactive calendar (where you can view information about a timesheet error by checking the date)
