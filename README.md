@@ -27,6 +27,7 @@ Within the database, there are a couple of tables:
 - Date
 - Reason
 - Timesheet sent (Y/N)
+- Timesheet received (Y/N)
 - Sent via E-Signature/Paper Timesheet
 - Date Received
 - *Since someone can have 2 shifts w/the same client on the same day, we'll just use the TimesheetNum to be the primary key*
