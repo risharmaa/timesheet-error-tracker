@@ -58,7 +58,8 @@ The website, which can only be accessed by admin, can perform these functions:
 - Can view all timesheet errors
 - Updated the database/schema to change the primary keys/use user numbers in links to make it more secure
 - Fixed bugs with changing caregiver assignments
-- created an update password option 
+- Created an update password option 
+- Created an option to view timesheet errors via a calendar (still very basic, needs to be updated w/pop-ups)
 
 ### Upcoming Tasks:
 - make it more viewable/easy to use
