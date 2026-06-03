@@ -58,6 +58,28 @@
     </head>
     <body>
         <h1>View Timesheet Errors</h1>
+        <form action="/viewtimesheets" method = "GET">
+        <label for="client">Client:</label>
+        <select name="client">
+        <option value = "">------</option>
+        {% for c in clients %}
+            <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
+        {% endfor %}
+        </select>
+        <label for="caregiver">Caregiver:</label>
+        <select name="caregiver">
+        <option value = "">------</option>
+        {% for c in caregivers %}
+            <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
+        {% endfor %}
+        </select>
+        <label for="date">Date:</label>
+        <input type="date" name="date"><br>
+        <button type = "submit"> Search </button>
+        </form>
+
+
+
         <div class="tab">
             <button class="tablinks red" onclick="openInfo(event, 'Send')">Need to send</button>
             <button class="tablinks yellow" onclick="openInfo(event, 'Waiting')">Awaiting response</button>

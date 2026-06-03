@@ -30,7 +30,7 @@ Within the database, there are a couple of tables:
 - Timesheet received (Y/N)
 - Sent via E-Signature/Paper Timesheet
 - Date Received
-- *Since someone can have 2 shifts w/the same client on the same day, we'll just use the TimesheetNum to be the primary key*
+- **Since someone can have 2 shifts w/the same client on the same day, we'll just use the TimesheetNum to be the primary key*
 
 ## The Website
 The website, which can only be accessed by admin, can perform these functions:
@@ -63,6 +63,7 @@ The website, which can only be accessed by admin, can perform these functions:
 - Created an option to view timesheet errors via a calendar (still very basic, needs to be updated w/pop-ups)
 - Added a confirmation page before users are deleted
 - Updated the view timesheets page to split up information into tabs based on status
+  - Can also search for timesheet errors based on client, caregiver + date
 
 ### Upcoming Tasks:
 - make it more viewable/easy to use

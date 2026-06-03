@@ -299,23 +299,100 @@ def create_timesheet():
 
     return render_template("create_timesheet.html", cl_list = cl_list, cr_list = cr_list)
     
-@app.route("/viewtimesheets")
+@app.route("/viewtimesheets", methods = ["GET"])
 def view_timesheets():
     # check if user is logged in:
     if 'user' not in session:
         return redirect("/login")
 
     cursor = mydb.cursor(dictionary=True)
-    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE")
-    sent = cursor.fetchall()
 
-    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE")
-    waiting = cursor.fetchall()
+    #generate list of clients + caregivers
+    cursor.execute("SELECT * FROM people WHERE type = 'Client'")
+    clients = cursor.fetchall()
 
-    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE")
-    closed = cursor.fetchall()
+    cursor.execute("SELECT * FROM people WHERE type = 'Caregiver'")
+    caregivers = cursor.fetchall()
 
-    return render_template("view_timesheets.html", sent = sent, waiting = waiting, closed = closed)
+    #search/filter for timesheet errors! 
+    client = request.args.get('client')
+    caregiver = request.args.get('caregiver')
+    date = request.args.get('date')
+
+    if client and caregiver and date:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s AND caregiverid = %s AND date = %s", (client, caregiver, date))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND clientid = %s AND caregiverid = %s AND date = %s", (client, caregiver, date))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND clientid = %s AND caregiverid = %s AND date = %s", (client, caregiver, date))
+        closed = cursor.fetchall()
+    elif client and caregiver:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s AND caregiverid = %s", (client, caregiver))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND clientid = %s AND caregiverid = %s", (client, caregiver))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND clientid = %s AND caregiverid = %s", (client, caregiver))
+        closed = cursor.fetchall()
+    elif client and date:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s AND date = %s", (client, date))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND clientid = %s AND date = %s", (client, date))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND clientid = %s AND date = %s", (client, date))
+        closed = cursor.fetchall()
+    elif caregiver and date:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND caregiverid = %s AND date = %s", (caregiver, date))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND caregiverid = %s AND date = %s", (caregiver, date))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND caregiverid = %s AND date = %s", (caregiver, date))
+        closed = cursor.fetchall()
+    elif client:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s", (client,))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND clientid = %s", (client,))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND clientid = %s", (client,))
+        closed = cursor.fetchall()
+    elif caregiver:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s", (client,))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND caregiverid = %s", (caregiver,))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND caregiverid = %s", (caregiver,))
+        closed = cursor.fetchall()
+    elif date:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND date = %s", (date,))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND date = %s", (date,))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND date = %s", (date,))
+        closed = cursor.fetchall()
+    else:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE")
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE")
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE")
+        closed = cursor.fetchall()
+
+    return render_template("view_timesheets.html", sent = sent, waiting = waiting, closed = closed, clients = clients, caregivers = caregivers)
 
 @app.route("/senttimesheet/<num>")
 def sent_timesheet(num):
