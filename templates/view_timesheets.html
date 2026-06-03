@@ -2,30 +2,145 @@
 <html>
     <head>
         <title>View Timesheet Errors</title>
+        <style>
+            /* Style the tab */
+            .tab {
+                display: flex;
+                overflow: hidden;
+                border: 1px solid #ccc;
+                /*background-color: #f1f1f1;*/
+            }
+
+            /* Style the buttons inside the tab */
+            .tab button {
+                /*background-color: inherit;*/
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+                font-size: 18px;
+                flex: 1;
+                font-family: 'Times New Roman', Times, serif;
+            }
+
+            .red {
+                background-color: rgb(241, 143, 143);
+            }
+            
+            .yellow {
+                background-color: rgb(242, 242, 180);
+            }
+
+            .green {
+                background-color: rgb(150, 220, 150);
+            }
+
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: #ccc;
+            }
+
+            /* Style the tab content */
+            .tabcontent {
+                display: none;
+                padding: 6px 12px;
+                border: 1px solid #ccc;
+                border-top: none;
+            }
+        </style>
     </head>
     <body>
         <h1>View Timesheet Errors</h1>
-        {% for timesheet in info %}
+        <div class="tab">
+            <button class="tablinks red" onclick="openInfo(event, 'Send')">Need to send</button>
+            <button class="tablinks yellow" onclick="openInfo(event, 'Waiting')">Awaiting response</button>
+            <button class="tablinks green" onclick="openInfo(event, 'Closed')">Closed</button>
+        </div>
+
+        <div id="Send" class="tabcontent">
+        {% if sent %}
+        <h2>Time sheets that need to be sent:</h2>
+        {% else %}
+        <h2>No timesheets need to be sent.</h2>
+        {% endif %}
+        {% for timesheet in sent %}
         <details>
             <summary>{{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} | {{timesheet.crfname}} {{timesheet.crlname}}</summary>
             <ul>
-            <p><b>Client email:</b> <a href = "mailto:{{timesheet['clientid']}}">{{timesheet.clientid}}</a></p>
+            <p><b>Client email/phone number: </b>{{timesheet.clientid}}</p>
             <p><b>Caregiver email:</b> <a href = "mailto:{{timesheet['caregiverid']}}">{{timesheet.caregiverid}}</a></p>
             <p><b>Reason:</b> {{timesheet.reason}}</p>
-            {% if timesheet.sent == 0 %}
-                <p><b>Status:</b> Still need to send</p>
-                <p><a href = "/senttimesheet/{{timesheet.num}}"><button>Update Timesheet as Sent</button></a></p>
-            {% elif timesheet.received == 0 %}
-                <p><b>Status:</b> Awaiting Response</p>
-                <p><a href = "/closetimesheet/{{timesheet.num}}"><button>Close Timesheet</button></a></p>
-            {% else %}
-                <p><b>Status:</b> Closed</p>
-                <p><b>Day received:</b> {{timesheet.day_r}}</p>
-                <p>Received via {{timesheet.type}}</p>
-            {% endif %}
+            <p><b>Status:</b> Still need to send</p>
+            <p><a href = "/senttimesheet/{{timesheet.num}}"><button>Update Timesheet as Sent</button></a></p>
             </ul>
         </details>
         {% endfor %}
+        </div>
+
+        <div id="Waiting" class="tabcontent">
+        {% if waiting %}
+        <h2>Timesheets that need to be closed:</h2>
+        {% else %}
+        <h2>No timesheets need to be closed.</h2>
+        {% endif %}
+        {% for timesheet in waiting %}
+        <details>
+            <summary>{{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} | {{timesheet.crfname}} {{timesheet.crlname}}</summary>
+            <ul>
+            <p><b>Client email/phone number: </b>{{timesheet.clientid}}</p>
+            <p><b>Caregiver email:</b> <a href = "mailto:{{timesheet['caregiverid']}}">{{timesheet.caregiverid}}</a></p>
+            <p><b>Reason:</b> {{timesheet.reason}}</p>
+            <p><b>Status:</b> Awaiting Response</p>
+            <p><a href = "/closetimesheet/{{timesheet.num}}"><button>Close Timesheet</button></a></p>
+            </ul>
+        </details>
+        {% endfor %}
+        </div>
+        
+        <div id="Closed" class="tabcontent">
+        {% if closed %}
+        <h2>Closed timesheets:</h2>
+        {% else %}
+        <h2>No timesheets are closed.</h2>
+        {% endif %}
+        {% for timesheet in closed %}
+        <details>
+            <summary>{{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} | {{timesheet.crfname}} {{timesheet.crlname}}</summary>
+            <ul>
+            <p><b>Client email/phone number: </b>{{timesheet.clientid}}</p>
+            <p><b>Caregiver email:</b> <a href = "mailto:{{timesheet['caregiverid']}}">{{timesheet.caregiverid}}</a></p>
+            <p><b>Reason:</b> {{timesheet.reason}}</p>
+            <p><b>Status:</b> Closed</p>
+            <p><b>Day received:</b> {{timesheet.day_r}}</p>
+            <p>Received via {{timesheet.type}}</p>
+            </ul>
+        </details>
+        {% endfor %}
+        </div>
+        
+        <script>
+        function openInfo(evt, kind) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(kind).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+        </script>
+    <p></p>
       <a href = "/">Home Page</a>
       <a href = "/logout">Logout</a>
       <a href = "/contactlist">Contact List</a>

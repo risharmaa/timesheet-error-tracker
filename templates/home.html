@@ -12,7 +12,7 @@
         <details>
             <summary style="color: red;">{{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} | {{timesheet.crfname}} {{timesheet.crlname}}</summary>
             <ul>
-            <p><b>Client email:</b> <a href = "mailto:{{timesheet['clientid']}}">{{timesheet.clientid}}</a></p>
+            <p><b>Client email/phone number: </b>{{timesheet.clientid}}</p>
             <p><b>Caregiver email:</b> <a href = "mailto:{{timesheet['caregiverid']}}">{{timesheet.caregiverid}}</a></p>
             <p><b>Reason:</b> {{timesheet.reason}}</p>
             {% if timesheet.sent == 0 %}
@@ -32,7 +32,7 @@
         <details>
             <summary style="color: goldenrod;">{{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} | {{timesheet.crfname}} {{timesheet.crlname}}</summary>
             <ul>
-            <p><b>Client email:</b> <a href = "mailto:{{timesheet['clientid']}}">{{timesheet.clientid}}</a></p>
+            <p><b>Client email/phone number: </b>{{timesheet.clientid}}</p>
             <p><b>Caregiver email:</b> <a href = "mailto:{{timesheet['caregiverid']}}">{{timesheet.caregiverid}}</a></p>
             <p><b>Reason:</b> {{timesheet.reason}}</p>
                 <p><b>Status:</b> Awaiting Response</p>

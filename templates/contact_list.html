@@ -47,10 +47,19 @@
                 <p><a href = "/addcaregiver/{{person.usernum}}"><button>Assign Caregivers</button></a></p>
             {% endif %}
 
-            <p><a href = "/deleteuser/{{person.usernum}}"><button>Delete User</button></a></p>
+            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')">Delete User</button>
+            <!--<p><a href = "/deleteuser/{{person.usernum}}"><button>Delete User</button></a></p>-->
             </ul>
+            <script>
+            function deleted(name, number) {
+                if (confirm("Would you like to delete " + name + "? You can not undo this action.")) {
+                    window.location.replace("/deleteuser/" + number)
+                }
+            }
+            </script>
         </details>
         {% endfor %}
+
 
         <a href = "/">Home Page</a>
         <a href = "/logout">Logout</a>

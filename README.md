@@ -61,11 +61,13 @@ The website, which can only be accessed by admin, can perform these functions:
 - Created an update password option 
 - When a user logs in, they automatically see which timesheet errors still need to be sent or are still waiting for a response
 - Created an option to view timesheet errors via a calendar (still very basic, needs to be updated w/pop-ups)
+- Added a confirmation page before users are deleted
+- Updated the view timesheets page to split up information into tabs based on status
 
 ### Upcoming Tasks:
 - make it more viewable/easy to use
 - have an interactive calendar (where you can view information about a timesheet error by checking the date)
-- Color code errors: Red for not sent, yellow for awaiting response, green for closed
+- Color code timesheet errors: Red for not sent, yellow for awaiting response, green for closed
 ### Additional features(?)
 - create 2FA for changing your own password (to ensure security)
 - Add search features for dropdowns (like assigning caregivers to a client)

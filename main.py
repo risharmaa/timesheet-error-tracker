@@ -113,7 +113,7 @@ def adduser():
             mydb.commit()
         # user has been created successfully!
         flash("User created successfully.", "success")
-        return redirect("/")
+        return redirect("/contactlist")
     return render_template("adduser.html")
 
 @app.route("/contactlist", methods=["GET"])
@@ -235,9 +235,6 @@ def assign_caregiver(usernum):
         if not check:
             c_list.append(c) 
 
-    #cursor.execute("SELECT DISTINCT people.fname, people.lname, people.userid FROM people WHERE people.userid IN (SELECT caregiverid FROM clients) AND people.userid NOT IN (SELECT caregiverid FROM clients WHERE clientid = %s AND caregiverid IS NOT NULL)", (email,))
-    #c_list = cursor.fetchall()
-
     add_caregiver = request.args.get('add_caregiver')
     if add_caregiver is not None:
         cursor.execute("INSERT INTO clients (clientid, caregiverid) VALUES (%s, %s)", (email, add_caregiver))
@@ -309,10 +306,16 @@ def view_timesheets():
         return redirect("/login")
 
     cursor = mydb.cursor(dictionary=True)
-    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid")
-    info = cursor.fetchall()
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE")
+    sent = cursor.fetchall()
 
-    return render_template("view_timesheets.html", info = info)
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE")
+    waiting = cursor.fetchall()
+
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE")
+    closed = cursor.fetchall()
+
+    return render_template("view_timesheets.html", sent = sent, waiting = waiting, closed = closed)
 
 @app.route("/senttimesheet/<num>")
 def sent_timesheet(num):
