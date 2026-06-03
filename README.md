@@ -57,11 +57,11 @@ The website, which can only be accessed by admin, can perform these functions:
 - Can view all timesheet errors
 - Updated the database/schema to change the primary keys/use user numbers in links to make it more secure
 - Fixed bugs with changing caregiver assignments
+- created an update password option 
 
 ### Upcoming Tasks:
 - update information for all users (emails, names, etc.)
-- be able to have the admin update their own password
-- make it more viewable
+- make it more viewable/easy to use
 - have homepage show timesheet errors that still need to be sent/awaiting
 - have an interactive calendar (where you can view information about a timesheet error by checking the date)
 - Color code errors: Red for not sent, yellow for awaiting response, green for closed
