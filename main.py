@@ -390,10 +390,13 @@ def calendar():
     cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid")
     timesheets = cursor.fetchall()
     for t in timesheets:
+        # if you still haven't sent the timesheet:
         if t['sent'] == 0 and t['received'] == 0:
             t['color'] = '#FF0000' #red
+        # if you sent the timesheet but are waiting for a response:
         elif t['sent'] == 1 and t['received'] == 0:
             t['color'] = '#FDBE02' #mango-yellow
+        # if the timesheet is closed
         else:
             t['color'] = '#008000' #green
 

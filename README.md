@@ -59,11 +59,11 @@ The website, which can only be accessed by admin, can perform these functions:
 - Updated the database/schema to change the primary keys/use user numbers in links to make it more secure
 - Fixed bugs with changing caregiver assignments
 - Created an update password option 
+- When a user logs in, they automatically see which timesheet errors still need to be sent or are still waiting for a response
 - Created an option to view timesheet errors via a calendar (still very basic, needs to be updated w/pop-ups)
 
 ### Upcoming Tasks:
 - make it more viewable/easy to use
-- have homepage show timesheet errors that still need to be sent/awaiting
 - have an interactive calendar (where you can view information about a timesheet error by checking the date)
 - Color code errors: Red for not sent, yellow for awaiting response, green for closed
 ### Additional features(?)
