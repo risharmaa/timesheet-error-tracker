@@ -164,18 +164,23 @@ def contactList():
 
     return render_template("contact_list.html", contacts = contacts)
 
-@app.route("/deleteuser/<path:email>")
-def delete_user(email):
+@app.route("/deleteuser/<int:usernum>")
+def delete_user(usernum):
     # check if user is logged in:
     if 'user' not in session:
         return redirect("/login")
+
+    # get userid of the person we're trying to delete
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT userid FROM people WHERE usernum = %s", (usernum,))
+    email = cursor.fetchone()
+    email = email['userid']
 
     # first check if the person that is trying to be deleted is the user
     if email == session['user']['username']:
         flash("You cannot delete yourself.", "error")
         return redirect('/contactlist')
     # next check if the user being deleted has a timesheet that is still open:
-    cursor = mydb.cursor(dictionary=True)
     cursor.execute("SELECT * FROM timesheet WHERE (clientid = %s OR caregiverid = %s) AND received = FALSE", (email, email))
     open_check = cursor.fetchall()
     if open_check:
@@ -203,7 +208,7 @@ def delete_user(email):
     flash(deletion, "success")
     return redirect("/contactlist")
 
-@app.route("/addcaregiver/<usernum>", methods = ["GET"])
+@app.route("/addcaregiver/<int:usernum>", methods = ["GET"])
 def assign_caregiver(usernum):
     # check if user is logged in:
     if 'user' not in session:
@@ -215,8 +220,18 @@ def assign_caregiver(usernum):
     client = cursor.fetchone()
     email = client['userid']
 
-    cursor.execute("SELECT DISTINCT people.fname, people.lname, people.userid FROM people WHERE people.userid IN (SELECT caregiverid FROM clients) AND people.userid NOT IN (SELECT caregiverid FROM clients WHERE clientid = %s)", (email,))
-    c_list = cursor.fetchall()
+    cursor.execute("SELECT * FROM people WHERE type = 'Caregiver'")
+    caregivers = cursor.fetchall()
+    c_list = []
+    # add caregivers to the need-to-add list
+    for c in caregivers:
+        cursor.execute("SELECT * FROM clients WHERE clientid = %s AND caregiverid = %s", (email, c['userid']))
+        check = cursor.fetchone()
+        if not check:
+            c_list.append(c) 
+
+    #cursor.execute("SELECT DISTINCT people.fname, people.lname, people.userid FROM people WHERE people.userid IN (SELECT caregiverid FROM clients) AND people.userid NOT IN (SELECT caregiverid FROM clients WHERE clientid = %s AND caregiverid IS NOT NULL)", (email,))
+    #c_list = cursor.fetchall()
 
     add_caregiver = request.args.get('add_caregiver')
     if add_caregiver is not None:
@@ -236,10 +251,11 @@ def assign_caregiver(usernum):
         timesheet_check = cursor.fetchall()
         if timesheet_check:
             flash("You can not remove a client-caregiver relationship with an open timesheet error.", "error")
-            return redirect(url_for("assign_caregiver", email=email))
+            return redirect(url_for("assign_caregiver", usernum=client['usernum']))
         else:
             # delete any client-caregiver relationships
             cursor.execute("DELETE FROM clients WHERE clientid = %s AND caregiverid = %s", (email, remove_caregiver))
+            mydb.commit()
             removed = "You have successfully removed a caregiver from " + client['fname'] + " " + client['lname'] + "!"
             flash(removed, "success")
         return redirect("/contactlist")
@@ -270,6 +286,7 @@ def create_timesheet():
         cursor.execute("SELECT * FROM timesheet WHERE clientid = %s AND caregiverid = %s AND date = %s", (client, caregiver, date))
         check = cursor.fetchall()
         if check:
+            # change to a pop-up with the flash error, ask to confirm whether they want to proceed with making a new timesheet error.
             flash("A timesheet error already exists for this client, caregiver and date.", "error")
             return redirect("/viewtimesheets")
         else:
@@ -318,7 +335,7 @@ def close_timesheet(num):
 
     if request.method == "POST":
         # get information from the form
-        day_r = request.form.get("date")
+        day_r = request.form.get("day_r")
         kind = request.form.get("kind")
 
         cursor.execute("UPDATE timesheet SET received = TRUE, type = %s, day_r = %s WHERE num = %s", (kind, day_r, num))

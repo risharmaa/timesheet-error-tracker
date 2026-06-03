@@ -6,18 +6,18 @@
 
     <body>
         <h1>Edit Caregiver Assignments for {{client.fname}} {{client.lname}}</h1>
-        <form action="/addcaregiver/{{client.userid}}" method = "GET">
+        <form action="/addcaregiver/{{client.usernum}}" method = "GET">
         <label for="name">Add Caregiver:</label>
         <select name="add_caregiver">
             <option value = "">------</option>
-            {% for c in cl_list %}
+            {% for c in c_list %}
                 <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
             {% endfor %}
         </select>
         <input type="submit" name="submit">
         </form>
 
-        <form action="/addcaregiver/{{client.userid}}" method = "GET">
+        <form action="/addcaregiver/{{client.usernum}}" method = "GET">
         <label for="name">Remove Caregiver:</label>
         <select name="remove_caregiver">
             <option value = "">------</option>
