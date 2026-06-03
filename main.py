@@ -1,5 +1,6 @@
 import mysql
 import mysql.connector 
+import json
 
 from flask import (
     Flask,
@@ -378,6 +379,26 @@ def update_password():
                 return redirect('/updatepassword')
 
     return render_template("update_password.html")
+
+@app.route("/calendar")
+def calendar():
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid")
+    timesheets = cursor.fetchall()
+    for t in timesheets:
+        if t['sent'] == 0 and t['received'] == 0:
+            t['color'] = '#FF0000' #red
+        elif t['sent'] == 1 and t['received'] == 0:
+            t['color'] = '#FDBE02' #mango-yellow
+        else:
+            t['color'] = '#008000' #green
+
+
+    return render_template("calendar.html", timesheets = timesheets)
 
 
 
