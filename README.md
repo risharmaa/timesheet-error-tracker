@@ -5,10 +5,11 @@ This project details the process of viewing/adding Timesheets, using a locally s
 Within the database, there are a couple of tables:
 
 *People*
-- UserID -- email(?), unique identifier that determines who a person is
+- UserID -- email or phone number, unique identifier that determines who a person is
 - First Name
 - Last Name
 - Type of user (caregiver/admin/client)
+- Usernum (this makes sure that if we visit a link to perform something, emails/phone numbers aren't showing up)
 
 *Client (Connected to the People Table)*
 - ClientID (connects a client to the people table)
@@ -20,6 +21,7 @@ Within the database, there are a couple of tables:
 - Password (allows them to login)
 
 *Timesheet*
+- TimesheetNum (this number automatically increases every time we add a new timesheet)
 - ClientID (associated with the people table)
 - CaregiverID (associated with the people table)
 - Date
@@ -27,7 +29,7 @@ Within the database, there are a couple of tables:
 - Timesheet sent (Y/N)
 - Sent via E-Signature/Paper Timesheet
 - Date Received
-- *To determine a specific timesheet, we'll use a combination of Client IDs, CaregiverIDs, and the Date*
+- *Since someone can have 2 shifts w/the same client on the same day, we'll just use the TimesheetNum to be the primary key*
 
 ## The Website
 The website, which can only be accessed by admin, can perform these functions:
@@ -50,11 +52,19 @@ The website, which can only be accessed by admin, can perform these functions:
 - Fixed some bugs within the code to make it more secure (like requiring all fields for adding users and checking for login at each page of the website)
 - Updated the database to match the new description for timesheets (removed the Timesheet #)
 
+**06/02 & 06/03**:
+- Able to create a timesheet error
+- Can view all timesheet errors
+- Updated the database/schema to change the primary keys/use user numbers in links to make it more secure
+- Fixed bugs with changing caregiver assignments
+
 ### Upcoming Tasks:
-- create a timesheet error
-- view all timesheet errors
 - update information for all users (emails, names, etc.)
 - be able to have the admin update their own password
+- make it more viewable
+- have homepage show timesheet errors that still need to be sent/awaiting
+- have an interactive calendar (where you can view information about a timesheet error by checking the date)
+- Color code errors: Red for not sent, yellow for awaiting response, green for closed
 ### Additional features(?)
 - create 2FA for changing your own password (to ensure security)
 - Add search features for dropdowns (like assigning caregivers to a client)
