@@ -2,6 +2,46 @@
 <html>
     <head>
         <title>Contact List</title>
+        <style>
+            /* Style the tab */
+            .tab {
+                display: flex;
+                overflow: hidden;
+                border: 1px solid #ccc;
+                /*background-color: #f1f1f1;*/
+            }
+
+            /* Style the buttons inside the tab */
+            .tab button {
+                background-color: inherit;
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+                font-size: 18px;
+                flex: 1;
+                font-family: 'Times New Roman', Times, serif;
+            }
+            /* Change background color of buttons on hover */
+            .tab button:hover {
+                background-color: #ddd;
+            }
+
+            /* Create an active/current tablink class */
+            .tab button.active {
+                background-color: #ccc;
+            }
+
+            /* Style the tab content */
+            .tabcontent {
+                display: none;
+                padding: 6px 12px;
+                border: 1px solid #ccc;
+                border-top: none;
+            }
+        </style>
     </head>
     <body>
         <h1>Contact List</h1>
@@ -23,6 +63,14 @@
         <button type = "submit"> Search </button>
         </form>
         <p> </p>
+        <div class="tab">
+            <button class="tablinks" onclick="openInfo(event, 'All')">All Users</button>
+            <button class="tablinks" onclick="openInfo(event, 'Admin')">Admin</button>
+            <button class="tablinks" onclick="openInfo(event, 'Client')">Clients</button>
+            <button class="tablinks" onclick="openInfo(event, 'Caregiver')">Caregivers</button>
+        </div>
+
+        <div id="All" class="tabcontent">
         {% for person in contacts %}
         <details>
             <summary>{{person.fname}} {{person.lname}}</summary>
@@ -59,10 +107,102 @@
             </script>
         </details>
         {% endfor %}
+        </div>
+
+        <div id="Admin" class="tabcontent">
+        {% for person in admin %}
+        <details>
+            <summary>{{person.fname}} {{person.lname}}</summary>
+            <ul>
+            <p>Type of User: {{person.type}}</p>
+            <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
+
+            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')">Delete User</button>
+            <!--<p><a href = "/deleteuser/{{person.usernum}}"><button>Delete User</button></a></p>-->
+            </ul>
+            <script>
+            function deleted(name, number) {
+                if (confirm("Would you like to delete " + name + "? You can not undo this action.")) {
+                    window.location.replace("/deleteuser/" + number)
+                }
+            }
+            </script>
+        </details>
+        {% endfor %}
+        </div>
+
+        <div id="Client" class="tabcontent">
+        {% for person in client %}
+        <details>
+            <summary>{{person.fname}} {{person.lname}}</summary>
+            <ul>
+            <p>Type of User: {{person.type}}</p>
+            <p>Email/Phone Number: {{person.userid}}</p>
+            <h3> Caregivers: </h3>
+            <ul>
+            {% if not person['caregiver'] %}
+                <li>No Caregivers Assigned.</li>
+            {% endif %}
+            {% for c in person['caregiver'] %}
+                <li><a href = "mailto:{{c.userid}}">{{c.fname}} {{c.lname}} </a></li>
+            {% endfor %}
+            </ul>
+            <p><a href = "/addcaregiver/{{person.usernum}}"><button>Assign Caregivers</button></a></p>
+
+            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')">Delete User</button>
+            <!--<p><a href = "/deleteuser/{{person.usernum}}"><button>Delete User</button></a></p>-->
+            </ul>
+            <script>
+            function deleted(name, number) {
+                if (confirm("Would you like to delete " + name + "? You can not undo this action.")) {
+                    window.location.replace("/deleteuser/" + number)
+                }
+            }
+            </script>
+        </details>
+        {% endfor %}
+        </div>
+
+        <div id="Caregiver" class="tabcontent">
+        {% for person in caregiver %}
+        <details>
+            <summary>{{person.fname}} {{person.lname}}</summary>
+            <ul>
+            <p>Type of User: {{person.type}}</p>
+            <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
+
+            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')">Delete User</button>
+            <!--<p><a href = "/deleteuser/{{person.usernum}}"><button>Delete User</button></a></p>-->
+            </ul>
+            <script>
+            function deleted(name, number) {
+                if (confirm("Would you like to delete " + name + "? You can not undo this action.")) {
+                    window.location.replace("/deleteuser/" + number)
+                }
+            }
+            </script>
+        </details>
+        {% endfor %}
+        </div>
 
 
         <a href = "/">Home Page</a>
         <a href = "/logout">Logout</a>
         <a href = "/adduser">Add User</a>
+        <script>
+        function openInfo(evt, kind) {
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            document.getElementById(kind).style.display = "block";
+            evt.currentTarget.className += " active";
+        }
+        </script>
     </body>
 </html>

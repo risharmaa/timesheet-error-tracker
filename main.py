@@ -166,8 +166,20 @@ def contactList():
         if item["type"] == "Client":
             cursor.execute("SELECT people.fname, people.lname, people.userid, clientid FROM clients INNER JOIN people ON caregiverid = userid WHERE clientid = %s", (item['userid'],))
             item["caregiver"] = cursor.fetchall()
+    
+    cursor.execute("SELECT * FROM people WHERE type = 'Admin'")
+    admin = cursor.fetchall()
 
-    return render_template("contact_list.html", contacts = contacts)
+    cursor.execute("SELECT * FROM people WHERE type = 'Caregiver'")
+    caregiver = cursor.fetchall()
+
+    cursor.execute("SELECT * FROM people WHERE type = 'Client'")
+    client = cursor.fetchall()
+    for item in client:
+        cursor.execute("SELECT people.fname, people.lname, people.userid, clientid FROM clients INNER JOIN people ON caregiverid = userid WHERE clientid = %s", (item['userid'],))
+        item["caregiver"] = cursor.fetchall()
+
+    return render_template("contact_list.html", contacts = contacts, admin = admin, client = client, caregiver = caregiver)
 
 @app.route("/deleteuser/<int:usernum>")
 def delete_user(usernum):
