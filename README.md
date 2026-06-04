@@ -71,12 +71,11 @@ The website, which can only be accessed by admin, can perform these functions:
   - it should pop up if a timesheet error w/the same caregiver, client & date exists
   - should let the user know that a pre-existing timesheet error exists & the reason why
   - allow the user to decide whether to go through or cancel creating a new error 
+- Turn the contact list into tabs (one for all users, another for clients, another for caregivers, and admin)
+- Add search features for create_timesheet dropdowns
 
 ### Upcoming Tasks:
 - make it more viewable/easy to use
-- Turn the contact list into tabs (one for all users, another for clients, another for caregivers, and admin)
-- create 2FA for changing your own password (to ensure security)
-- Add search features for dropdowns (like assigning caregivers to a client)
 - When creating a timesheet error, based on the client that the admin picks the drop-down list of caregivers that client has should be automatically generated (and vice versa)
 - Make the website look nice/usable (last task)
 
