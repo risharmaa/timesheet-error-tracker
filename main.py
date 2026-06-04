@@ -286,11 +286,21 @@ def create_timesheet():
         reason = request.form.get("reason")
         date = request.form.get("date")
         cursor.execute("SELECT * FROM timesheet WHERE clientid = %s AND caregiverid = %s AND date = %s", (client, caregiver, date))
-        check = cursor.fetchall()
+        check = cursor.fetchone()
         if check:
-            # change to a pop-up with the flash error, ask to confirm whether they want to proceed with making a new timesheet error.
-            flash("A timesheet error already exists for this client, caregiver and date.", "error")
-            return redirect("/viewtimesheets")
+            # redirect to make sure that the user doesn't add duplicate time sheets
+            session["timesheet"] = {
+                "client": client,
+                "caregiver": caregiver,
+                "reason": reason,
+                "date": date
+            }
+            reason = check['reason']
+            cursor.execute("SELECT fname, lname FROM people WHERE userid = %s", (session['timesheet']['client'],))
+            client_name = cursor.fetchone()
+            cursor.execute("SELECT fname, lname FROM people WHERE userid = %s", (session['timesheet']['caregiver'],))
+            caregiver_name = cursor.fetchone()
+            return render_template("confirm_timesheet.html", client_name = client_name, caregiver_name = caregiver_name, reason = reason)
         else:
             cursor.execute("INSERT INTO timesheet (clientid, caregiverid, date, reason) VALUES (%s, %s, %s, %s)", (client, caregiver, date, reason))
             mydb.commit()
@@ -482,6 +492,21 @@ def calendar():
 
 
     return render_template("calendar.html", timesheets = timesheets)
+
+@app.route("/confirmtimesheet", methods = ["GET"])
+def confirm():
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("INSERT INTO timesheet (clientid, caregiverid, date, reason) VALUES (%s, %s, %s, %s)", (session['timesheet']['client'], session['timesheet']['caregiver'], session['timesheet']['date'], session['timesheet']['reason']))
+    mydb.commit()
+    flash("You have successfully created a timesheet error!", "success")
+    session.pop('timesheet', None)
+    return redirect("/viewtimesheets")
+
+@app.route("/canceltimesheet")
+def cancel():
+    session.pop('timesheet', None)
+    return redirect("/createtimesheet")
+
 
 
 

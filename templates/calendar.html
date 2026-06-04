@@ -17,10 +17,62 @@
                             title   : '{{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}',
                             start   : '{{timesheet.date}}',
                             color   : '{{timesheet.color}}',
+
+                            extendedProps: {
+                                reason: '{{timesheet.reason}}',
+                                {% if timesheet.color == '#FF0000' %}
+                                    status: 'Need to send',
+                                    send: '/senttimesheet/{{timesheet.num}}',
+                                {% elif timesheet.color == '#FDBE02' %}
+                                    status: 'Awaiting Response',
+                                    close: '/closetimesheet/{{timesheet.num}}',
+                                {% else %}
+                                    status: 'Closed',
+                                    day_r: '{{timesheet.day_r}}',
+                                    method: '{{timesheet.type}}',
+                                {% endif %}
+                            }
                         }
                     {% if not loop.last %},{% endif %}
                     {% endfor %}
-                ]
+                ], 
+                eventClick: function(info) {
+                    let props = info.event.extendedProps;
+
+                    // show all information
+                    document.getElementById('modalTitle').innerText = info.event.title;
+                    document.getElementById('modalReason').innerText = props.reason;
+                    document.getElementById('modalStatus').innerText = props.status;
+
+                    // link to update status to sent
+                    let sendContainer = document.getElementById('modalSend');
+                    if (props.send) {
+                        sendContainer.innerHTML = `<a href="${props.send}">Update Timesheet Error Status to Sent</a>`;
+                    } else {
+                        sendContainer.innerHTML = ''; 
+                    }
+
+                    // link to close timesheet error
+                    let closeContainer = document.getElementById('modalClose');
+                    if (props.close) {
+                        closeContainer.innerHTML = `<a href="${props.close}">Close Timesheet Error</a>`;
+                    } else {
+                        closeContainer.innerHTML = '';
+                    }
+
+                    // show info about closed status
+                    let closedDetailsContainer = document.getElementById('modalClosedDetails');
+                    if (closedDetailsContainer) {
+                        if (props.status === 'Closed') {
+                            closedDetailsContainer.innerHTML = `<p><b>Day Received:</b> ${props.day_r}</p><p><b>Received via:</b> ${props.method}</p>`;
+                        } else {
+                            closedDetailsContainer.innerHTML = '';
+                        }
+                    }
+
+                    // show the info
+                    document.getElementById('eventModal').style.display = 'block';
+                }
             });
 
             calendar.render();
@@ -30,5 +82,26 @@
         <a href = "/contactlist">Contact List</a>
         <a href = "/createtimesheet">Create New Timesheet Error</a>
         <a href = "/viewtimesheets">View Timesheets</a>
+
+        <!-- popup window -->
+        <div id="eventModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; border:1px solid #ccc; padding:25px; z-index:2000; border-radius:8px; box-shadow:0 4px 15px rgba(0,0,0,0.2); min-width:300px;">
+  
+        <!-- Event Details -->
+        <h3 id="modalTitle" style="margin-top:0; color:#333;"></h3>
+        <p><b>Reason:</b> <span id="modalReason"></span></p>
+        <p><b>Status:</b> <span id="modalStatus"></span></p>
+  
+        <div id="modalClosedDetails"></div>
+
+        <div id="modalSend" style="margin-top:15px;"></div>
+        <div id="modalClose" style="margin-top:15px;"></div>
+  
+        <hr style="margin-top:20px; border:0; border-top:1px solid #eee;">
+        <button onclick="document.getElementById('eventModal').style.display='none'" style="background:#6c757d; color:white; border:0; padding:8px 15px; border-radius:4px; cursor:pointer; float:right;"> Close </button>
+        </div>
+
+        <!-- Dark background overlay behind the modal -->
+        <div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.4); z-index:1999;" onclick="closeMyModal()"></div>
+
     </body>
 </html>

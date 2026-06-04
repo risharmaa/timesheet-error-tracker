@@ -65,14 +65,15 @@ The website, which can only be accessed by admin, can perform these functions:
 - Updated the view timesheets page to split up information into tabs based on status
   - Can also search for timesheet errors based on client, caregiver + date
 
-### Upcoming Tasks:
-- make it more viewable/easy to use
-- have an interactive calendar (where you can view information about a timesheet error by checking the date)
-- Color code timesheet errors: Red for not sent, yellow for awaiting response, green for closed
+**06/04**:
+- Made the calendar interactive -- when clicking on the specific event, they can see the reason/update it as sent right away
 - Create a pop-up during the create timesheet error
   - it should pop up if a timesheet error w/the same caregiver, client & date exists
   - should let the user know that a pre-existing timesheet error exists & the reason why
-  - allow the user to decide whether to go through or cancel creating a new error
+  - allow the user to decide whether to go through or cancel creating a new error 
+
+### Upcoming Tasks:
+- make it more viewable/easy to use
 - Turn the contact list into tabs (one for all users, another for clients, another for caregivers, and admin)
 - create 2FA for changing your own password (to ensure security)
 - Add search features for dropdowns (like assigning caregivers to a client)

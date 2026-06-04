@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Confirm Timesheet Error</title>
+    </head>
+    <body>
+        <div style="border: 1px solid #c2c2c2; background-color: #fff9e6; padding: 15px; margin: 20px 0;">
+        <p>A timesheet error for <b>{{client_name.fname}} {{client_name.lname}}</b> and <b>{{caregiver_name.fname}} {{caregiver_name.lname}}</b> on <b>{{session.timesheet.date}}</b> for <b>{{reason}}</b> already exists. Would you still like to create this timesheet error?</p>
+        </div>
+    
+        <div style="display: flex; gap: 15px;">
+        <a href="/confirmtimesheet">
+            <button type="button" style="background-color: green; color: white; padding: 10px 20px;">Yes</button>
+        </a>
+
+        <a href="/canceltimesheet">
+            <button type="button" style="background-color: red; color: white; padding: 10px 20px;">No</button>
+        </a>
+        </div>
+    </body>
+</html>
