@@ -75,7 +75,6 @@ The website, which can only be accessed by admin, can perform these functions:
 - Add search features for create_timesheet dropdowns
 
 ### Upcoming Tasks:
-- make it more viewable/easy to use
 - When creating a timesheet error, based on the client that the admin picks the drop-down list of caregivers that client has should be automatically generated (and vice versa)
 - Make the website look nice/usable (last task)
 

@@ -10,6 +10,7 @@ from flask import (
     url_for,
     session,
     flash,
+    jsonify
 )
 
 app = Flask(__name__)
@@ -293,8 +294,10 @@ def create_timesheet():
 
     if request.method == "POST":
         # get information from the form
-        client = request.form.get("client")
-        caregiver = request.form.get("caregiver")
+        client = request.form.get("clientid")
+        caregiver = request.form.get("caregiverid")
+        print("clientid:", client)
+        print("caregiverid:", caregiver)
         reason = request.form.get("reason")
         date = request.form.get("date")
         cursor.execute("SELECT * FROM timesheet WHERE clientid = %s AND caregiverid = %s AND date = %s", (client, caregiver, date))
@@ -320,6 +323,14 @@ def create_timesheet():
             return redirect("/viewtimesheets")
 
     return render_template("create_timesheet.html", cl_list = cl_list, cr_list = cr_list)
+
+@app.route("/getcaregivers/<path:userid>")
+def get_caregivers(userid):
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT people.fname, people.lname, people.userid, clientid FROM clients INNER JOIN people ON caregiverid = userid WHERE clientid = %s", (userid,))
+    caregivers = cursor.fetchall()
+    print("caregivers found:", caregivers)
+    return jsonify(caregivers)
     
 @app.route("/viewtimesheets", methods = ["GET"])
 def view_timesheets():
@@ -517,6 +528,7 @@ def confirm():
 @app.route("/canceltimesheet")
 def cancel():
     session.pop('timesheet', None)
+    flash("Timesheet error creation canceled", "err")
     return redirect("/createtimesheet")
 
 
