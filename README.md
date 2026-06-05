@@ -1,6 +1,5 @@
 # The Project
 This project details the process of viewing/adding Timesheets, using a locally stored database
-hi
 
 ## The Database
 Within the database, there are a couple of tables:
