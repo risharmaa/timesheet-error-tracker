@@ -76,7 +76,7 @@ def login():
             flash("Logged in successfully.", "success")
             return redirect("/")
         else: # user does not exist/the password is not the same as the one inputted
-            flash("Invalid username or password.", "error")
+            flash("Invalid username or password.", "danger")
     return render_template("login.html")
 
 @app.route("/logout")
@@ -101,7 +101,7 @@ def adduser():
         cursor.execute("SELECT * FROM people WHERE userid = %s", (username,))
         check = cursor.fetchall()
         if check:
-            flash("A user with the same email or phone number already exists.", "error")
+            flash("A user with the same email or phone number already exists.", "danger")
             return redirect("/adduser")
 
         # add the new person into the database
@@ -196,14 +196,14 @@ def delete_user(usernum):
 
     # first check if the person that is trying to be deleted is the user
     if email == session['user']['username']:
-        flash("You cannot delete yourself.", "error")
+        flash("You cannot delete yourself.", "danger")
         return redirect('/contactlist')
     # next check if the user being deleted has a timesheet that is still open:
     cursor.execute("SELECT * FROM timesheet WHERE (clientid = %s OR caregiverid = %s) AND received = FALSE", (email, email))
     open_check = cursor.fetchall()
     if open_check:
         # this means that there exists a timesheet error that is still open/not closed yet!
-        flash("You can not delete a user with an open timesheet error.", "error")
+        flash("You can not delete a user with an open timesheet error.", "danger")
         return redirect('/contactlist')
     
     #figure out the type of user that we're trying to delete
@@ -265,7 +265,7 @@ def assign_caregiver(usernum):
         cursor.execute("SELECT * FROM timesheet WHERE clientid = %s AND caregiverid = %s AND received = FALSE", (email, remove_caregiver))
         timesheet_check = cursor.fetchall()
         if timesheet_check:
-            flash("You can not remove a client-caregiver relationship with an open timesheet error.", "error")
+            flash("You can not remove a client-caregiver relationship with an open timesheet error.", "danger")
             return redirect(url_for("assign_caregiver", usernum=client['usernum']))
         else:
             # delete any client-caregiver relationships
@@ -488,7 +488,7 @@ def update_password():
                 flash("Password updated.", "success")
                 return redirect('/')
             elif new == user['password']:
-                flash("You already have this password.", "error")
+                flash("You already have this password.", "danger")
                 return redirect('/updatepassword')
 
     return render_template("update_password.html")
@@ -528,7 +528,7 @@ def confirm():
 @app.route("/canceltimesheet")
 def cancel():
     session.pop('timesheet', None)
-    flash("Timesheet error creation canceled", "err")
+    flash("Timesheet error creation canceled", "danger")
     return redirect("/createtimesheet")
 
 

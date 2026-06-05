@@ -6,6 +6,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     </head>
     <body>
         <nav class="navbar navbar-expand-sm bg-light">
@@ -19,8 +20,20 @@
 
         </nav>
 
+        <!-- Flash messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <!-- Bootstrap close button to dismiss the alert -->
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
 
-        <h1>Welcome, {{session['user']['fname']}} {{session['user']['lname']}}</h1>
+        <h2>Welcome, {{session['user']['fname']}} {{session['user']['lname']}}</h2>
 
         {% if sent %}
         <h3>Timesheets that need to be sent:</h3>
