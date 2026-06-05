@@ -294,10 +294,8 @@ def create_timesheet():
 
     if request.method == "POST":
         # get information from the form
-        client = request.form.get("clientid")
-        caregiver = request.form.get("caregiverid")
-        print("clientid:", client)
-        print("caregiverid:", caregiver)
+        client = request.form.get("client_id")
+        caregiver = request.form.get("caregiver_id")
         reason = request.form.get("reason")
         date = request.form.get("date")
         cursor.execute("SELECT * FROM timesheet WHERE clientid = %s AND caregiverid = %s AND date = %s", (client, caregiver, date))
@@ -482,7 +480,7 @@ def update_password():
         if new == second:
             if new != user['password']:
                 # hash password before updating the database
-                pword = generate_password_hash("pass", method='pbkdf2:sha256')
+                pword = generate_password_hash(new, method='pbkdf2:sha256')
                 cursor.execute("UPDATE admin SET password = %s WHERE adminid = %s", (pword, session['user']['username']))
                 mydb.commit()
                 flash("Password updated.", "success")

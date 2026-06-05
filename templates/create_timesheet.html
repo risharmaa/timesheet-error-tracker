@@ -9,21 +9,23 @@
         <table>
           <tr>
             <td><label for="client">Client:</label></td>
-            <td><input type="text" id="client-search" name="client" list="client" placeholder="Select a Client" required>
+            <td><input type="text" list="client" id="client-input" name="client_id">
             <datalist id="client">
             {% for c in cl_list %}
-                <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
+                <option value="{{ c.userid }}" label="{{ c.fname }} {{ c.lname }}"></option>
             {% endfor %}
-            </datalist></td>
+            </datalist>
+          </td>
           </tr>
           <tr>
             <td><label for="caregiver">Caregiver:</label></td>
-            <td><input type="text" id="client-search" name="caregiver" list="caregiver" placeholder="Select a Caregiver" required>
+            <td><input type="text" list="caregiver" id="caregiver-input" name="caregiver_id">
             <datalist id="caregiver">
             {% for c in cr_list %}
-                <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
+                <option value="{{ c.userid }}" label="{{ c.fname }} {{ c.lname }}"></option>
             {% endfor %}
-            </select></td>
+            </datalist>
+          </td>
           </tr>
           <tr>
             <td><label for="date">Date:</label></td>
