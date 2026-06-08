@@ -128,54 +128,109 @@ def contactList():
     fname = request.args.get('fname')
     lname = request.args.get('lname')
     email = request.args.get('email')
-    kind = request.args.get('type')
-    if fname and lname and email and kind:
-        cursor.execute("SELECT * FROM people WHERE type = %s AND fname = %s AND lname = %s AND userid = %s", (kind, fname, lname, email))
-    elif fname and lname and email:
+
+    if fname and lname and email:
         cursor.execute("SELECT * FROM people WHERE fname = %s AND lname = %s AND userid = %s", (fname, lname, email))
-    elif fname and lname and kind:
-        cursor.execute("SELECT * FROM people WHERE type = %s AND fname = %s AND lname = %s", (kind, fname, lname))
-    elif fname and email and kind:
-        cursor.execute("SELECT * FROM people WHERE type = %s AND fname = %s AND userid = %s", (kind, fname, email))
-    elif lname and email and kind:
-        cursor.execute("SELECT * FROM people WHERE type = %s AND lname = %s AND userid = %s", (kind, lname, email))
+        contacts = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE fname = %s AND lname = %s AND userid = %s AND type = 'Admin'", (fname, lname, email))
+        admin = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE fname = %s AND lname = %s AND userid = %s AND type = 'Client'", (fname, lname, email))
+        client = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE fname = %s AND lname = %s AND userid = %s AND type = 'Caregiver'", (fname, lname, email))
+        caregiver = cursor.fetchall()
     elif fname and lname:
         cursor.execute("SELECT * FROM people fname = %s AND lname = %s", (fname, lname))
+        contacts = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people fname = %s AND lname = %s AND type = 'Admin'", (fname, lname))
+        admin = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people fname = %s AND lname = %s AND type = 'Client'", (fname, lname))
+        client = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people fname = %s AND lname = %s AND type = 'Caregiver'", (fname, lname))
+        caregiver = cursor.fetchall()
     elif fname and email:
         cursor.execute("SELECT * FROM people WHERE fname = %s AND userid = %s", (fname, email))
-    elif fname and kind:
-        cursor.execute("SELECT * FROM people WHERE type = %s AND fname = %s", (kind, fname))
+        contacts = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE fname = %s AND userid = %s AND type = 'Admin'", (fname, email))
+        admin = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE fname = %s AND userid = %s AND type = 'Client'", (fname, email))
+        client = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE fname = %s AND userid = %s AND type = 'Caregiver'", (fname, email))
+        caregiver = cursor.fetchall()
     elif lname and email:
         cursor.execute("SELECT * FROM people WHERE lname = %s AND userid = %s", (lname, email))
-    elif lname and kind:
-        cursor.execute("SELECT * FROM people WHERE type = %s AND lname = %s", (kind, lname))
-    elif email and kind:
-        cursor.execute("SELECT * FROM people WHERE type = %s AND fname = %s AND lname = %s AND userid = %s", (kind, fname, lname, email))
+        contacts = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE lname = %s AND userid = %s AND type = 'Admin'", (lname, email))
+        admin = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE lname = %s AND userid = %s AND type = 'Client'", (lname, email))
+        client = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE lname = %s AND userid = %s AND type = 'Caregiver'", (lname, email))
+        caregiver = cursor.fetchall()
     elif fname:
         cursor.execute("SELECT * FROM people WHERE fname = %s", (fname,))
+        contacts = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE fname = %s AND type = 'Admin'", (fname,))
+        admin = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE fname = %s AND type = 'Client'", (fname,))
+        client = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE fname = %s AND type = 'Caregiver'", (fname,))
+        caregiver = cursor.fetchall()
     elif lname:
         cursor.execute("SELECT * FROM people WHERE lname = %s", (lname,))
-    elif kind:
-        cursor.execute("SELECT * FROM people WHERE type = %s", (kind,))
+        contacts = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE lname = %s AND type = 'Admin'", (lname,))
+        admin = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE lname = %s AND type = 'Client'", (lname,))
+        client = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE lname = %s AND type = 'Caregiver'", (lname,))
+        caregiver = cursor.fetchall()
     elif email:
         cursor.execute("SELECT * FROM people WHERE userid = %s", (email,))
+        contacts = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE userid = %s AND type = 'Admin'", (email,))
+        admin = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE userid = %s AND type = 'Client'", (email,))
+        client = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE userid = %s AND type = 'Caregiver'", (email,))
+        caregiver = cursor.fetchall()
     else:
         cursor.execute("SELECT * FROM people")
-    contacts = cursor.fetchall()
+        contacts = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE type = 'Admin'")
+        admin = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE type = 'Client'")
+        client = cursor.fetchall()
+
+        cursor.execute("SELECT * FROM people WHERE type = 'Caregiver'")
+        caregiver = cursor.fetchall()
 
     for item in contacts:
         if item["type"] == "Client":
             cursor.execute("SELECT people.fname, people.lname, people.userid, clientid FROM clients INNER JOIN people ON caregiverid = userid WHERE clientid = %s", (item['userid'],))
             item["caregiver"] = cursor.fetchall()
     
-    cursor.execute("SELECT * FROM people WHERE type = 'Admin'")
-    admin = cursor.fetchall()
-
-    cursor.execute("SELECT * FROM people WHERE type = 'Caregiver'")
-    caregiver = cursor.fetchall()
-
-    cursor.execute("SELECT * FROM people WHERE type = 'Client'")
-    client = cursor.fetchall()
     for item in client:
         cursor.execute("SELECT people.fname, people.lname, people.userid, clientid FROM clients INNER JOIN people ON caregiverid = userid WHERE clientid = %s", (item['userid'],))
         item["caregiver"] = cursor.fetchall()
