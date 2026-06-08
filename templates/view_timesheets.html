@@ -152,18 +152,28 @@
         {% else %}
         <h2>No timesheets need to be sent.</h2>
         {% endif %}
+        <div class="accordion" id="sentAccordian">
         {% for timesheet in sent %}
-        <details>
-            <summary>{{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} | {{timesheet.crfname}} {{timesheet.crlname}}</summary>
-            <ul>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                {{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}
+                </button>
+            </h2>
+            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#sentAccordian">
+            <div class="accordion-body">
+            <div class="timesheet-details">
             <p><b>Client email/phone number: </b>{{timesheet.clientid}}</p>
             <p><b>Caregiver email:</b> <a href = "mailto:{{timesheet['caregiverid']}}">{{timesheet.caregiverid}}</a></p>
             <p><b>Reason:</b> {{timesheet.reason}}</p>
             <p><b>Status:</b> Still need to send</p>
             <p><a href = "/senttimesheet/{{timesheet.num}}"><button type = "button" class = "rounded-3 btn btn-outline-warning">Update Timesheet as Sent</button></a></p>
-            </ul>
-        </details>
+            </div>            
+        </div>
+        </div>
+        </div>
         {% endfor %}
+        </div>
         </div>
 
         <div id="Waiting" class="tabcontent">
@@ -172,18 +182,28 @@
         {% else %}
         <h2>No timesheets need to be closed.</h2>
         {% endif %}
+        <div class="accordion" id="waitingAccordian">
         {% for timesheet in waiting %}
-        <details>
-            <summary>{{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} | {{timesheet.crfname}} {{timesheet.crlname}}</summary>
-            <ul>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                {{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}
+                </button>
+            </h2>
+            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#waitingAccordian">
+            <div class="accordion-body">
+            <div class="timesheet-details">
             <p><b>Client email/phone number: </b>{{timesheet.clientid}}</p>
             <p><b>Caregiver email:</b> <a href = "mailto:{{timesheet['caregiverid']}}">{{timesheet.caregiverid}}</a></p>
             <p><b>Reason:</b> {{timesheet.reason}}</p>
-            <p><b>Status:</b> Awaiting Response</p>
+            <p><b>Status:</b> Still need to send</p>
             <p><a href = "/closetimesheet/{{timesheet.num}}"><button type = "button" class = "rounded-3 btn btn-outline-success">Close Timesheet</button></a></p>
-            </ul>
-        </details>
+            </div>            
+        </div>
+        </div>
+        </div>
         {% endfor %}
+        </div>
         </div>
         
         <div id="Closed" class="tabcontent">
