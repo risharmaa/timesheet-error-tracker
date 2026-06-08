@@ -488,6 +488,9 @@ def update_password():
             elif new == user['password']:
                 flash("You already have this password.", "danger")
                 return redirect('/updatepassword')
+        else:
+            flash("Passwords do not match.", "danger")
+            return redirect('/updatepassword')
 
     return render_template("update_password.html")
 
