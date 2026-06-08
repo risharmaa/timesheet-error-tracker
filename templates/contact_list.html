@@ -44,7 +44,7 @@
 
             /* Create an active/current tablink class */
             .tab button.active {
-                background-color: #ccc;
+                background-color: #a5c8fd;
             }
 
             /* Style the tab content */
@@ -126,7 +126,7 @@
         {% for person in contacts %}
         <div class="accordion-item">
             <h2 class="accordion-header" id="heading{{ loop.index }}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
                 {{person.fname}} {{person.lname}}
                 </button>
             </h2>
@@ -175,7 +175,7 @@
         {% for person in admin %}
         <div class="accordion-item">
             <h2 class="accordion-header" id="heading{{ loop.index }}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
                 {{person.fname}} {{person.lname}}
                 </button>
             </h2>
@@ -206,7 +206,7 @@
         {% for person in client %}
         <div class="accordion-item">
             <h2 class="accordion-header" id="heading{{ loop.index }}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
                 {{person.fname}} {{person.lname}}
                 </button>
             </h2>
@@ -249,7 +249,7 @@
         {% for person in caregiver %}
         <div class="accordion-item">
             <h2 class="accordion-header" id="heading{{ loop.index }}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style = "background-color: transparent;">
                 {{person.fname}} {{person.lname}}
                 </button>
             </h2>

@@ -85,7 +85,7 @@
             {% for timesheet in sent %}
             <div class="accordion-item">
             <h2 class="accordion-header" id="heading{{ loop.index }}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
                 {{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}
                 </button>
             </h2>
@@ -122,7 +122,7 @@
             {% for timesheet in waiting %}
             <div class="accordion-item">
             <h2 class="accordion-header" id="heading{{ loop.index }}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
                 {{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}
                 </button>
             </h2>
