@@ -142,16 +142,16 @@ def contactList():
         cursor.execute("SELECT * FROM people WHERE fname = %s AND lname = %s AND userid = %s AND type = 'Caregiver'", (fname, lname, email))
         caregiver = cursor.fetchall()
     elif fname and lname:
-        cursor.execute("SELECT * FROM people fname = %s AND lname = %s", (fname, lname))
+        cursor.execute("SELECT * FROM people WHERE fname = %s AND lname = %s", (fname, lname))
         contacts = cursor.fetchall()
 
-        cursor.execute("SELECT * FROM people fname = %s AND lname = %s AND type = 'Admin'", (fname, lname))
+        cursor.execute("SELECT * FROM people WHERE fname = %s AND lname = %s AND type = 'Admin'", (fname, lname))
         admin = cursor.fetchall()
 
-        cursor.execute("SELECT * FROM people fname = %s AND lname = %s AND type = 'Client'", (fname, lname))
+        cursor.execute("SELECT * FROM people WHERE fname = %s AND lname = %s AND type = 'Client'", (fname, lname))
         client = cursor.fetchall()
 
-        cursor.execute("SELECT * FROM people fname = %s AND lname = %s AND type = 'Caregiver'", (fname, lname))
+        cursor.execute("SELECT * FROM people WHERE fname = %s AND lname = %s AND type = 'Caregiver'", (fname, lname))
         caregiver = cursor.fetchall()
     elif fname and email:
         cursor.execute("SELECT * FROM people WHERE fname = %s AND userid = %s", (fname, email))
