@@ -74,7 +74,7 @@
                 <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
             {% endfor %}
         </select>
-        <input type="submit" name="submit">
+        <input type="submit" name="submit" class="btn btn-success">
         </form>
 
         <form action="/addcaregiver/{{client.usernum}}" method = "GET">
@@ -85,7 +85,7 @@
                 <option value="{{r.userid}}">{{r.fname}} {{r.lname}}</option>
             {% endfor %}
         </select>
-        <input type="submit" name="submit">
+        <input type="submit" name="submit" class="btn btn-danger">
         </form>
 
     </body>

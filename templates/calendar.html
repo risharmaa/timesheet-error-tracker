@@ -106,7 +106,7 @@
                     // link to update status to sent
                     let sendContainer = document.getElementById('modalSend');
                     if (props.send) {
-                        sendContainer.innerHTML = `<a href="${props.send}">Update Timesheet Error Status to Sent</a>`;
+                        sendContainer.innerHTML = `<a href="${props.send}"><button class = "btn btn-outline-warning">Update Timesheet Error Status to Sent</button></a>`;
                     } else {
                         sendContainer.innerHTML = ''; 
                     }
@@ -114,7 +114,7 @@
                     // link to close timesheet error
                     let closeContainer = document.getElementById('modalClose');
                     if (props.close) {
-                        closeContainer.innerHTML = `<a href="${props.close}">Close Timesheet Error</a>`;
+                        closeContainer.innerHTML = `<a href="${props.close}"><button class = "btn btn-outline-success">Close Timesheet Error</button></a>`;
                     } else {
                         closeContainer.innerHTML = '';
                     }
