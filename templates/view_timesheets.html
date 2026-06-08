@@ -192,19 +192,29 @@
         {% else %}
         <h2>No timesheets are closed.</h2>
         {% endif %}
+        <div class="accordion" id="closedAccordian">
         {% for timesheet in closed %}
-        <details>
-            <summary>{{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} | {{timesheet.crfname}} {{timesheet.crlname}}</summary>
-            <ul>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                {{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}
+                </button>
+            </h2>
+            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#closedAccordian">
+            <div class="accordion-body">
+            <div class="timesheet-details">
             <p><b>Client email/phone number: </b>{{timesheet.clientid}}</p>
             <p><b>Caregiver email:</b> <a href = "mailto:{{timesheet['caregiverid']}}">{{timesheet.caregiverid}}</a></p>
             <p><b>Reason:</b> {{timesheet.reason}}</p>
             <p><b>Status:</b> Closed</p>
             <p><b>Day received:</b> {{timesheet.day_r}}</p>
             <p>Received via {{timesheet.type}}</p>
-            </ul>
-        </details>
+            </div>            
+        </div>
+        </div>
+        </div>
         {% endfor %}
+        </div>
         </div>
         
         <script>
@@ -222,7 +232,5 @@
             evt.currentTarget.className += " active";
         }
         </script>
-    <p></p>
-      
     </body>
 </html>
