@@ -122,10 +122,17 @@
         </div>
 
         <div id="All" class="tabcontent">
+        <div class="accordion" id="allAccordian">
         {% for person in contacts %}
-        <details>
-            <summary>{{person.fname}} {{person.lname}}</summary>
-            <ul>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                {{person.fname}} {{person.lname}}
+                </button>
+            </h2>
+            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#allAccordian">
+            <div class="accordion-body">
+            <div class="contact-details">
             <p>Type of User: {{person.type}}</p>
             {% if person.type == "Client" %}
                 <p>Email/Phone Number: {{person.userid}}</p>
@@ -143,11 +150,10 @@
                     <li><a href = "mailto:{{c.userid}}">{{c.fname}} {{c.lname}} </a></li>
                 {% endfor %}
                 </ul>
-                <p><a href = "/addcaregiver/{{person.usernum}}"><button>Assign Caregivers</button></a></p>
+                <p><a href = "/addcaregiver/{{person.usernum}}"><button class="btn btn-outline-primary">Assign Caregivers</button></a></p>
             {% endif %}
 
-            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')">Delete User</button>
-            <!--<p><a href = "/deleteuser/{{person.usernum}}"><button>Delete User</button></a></p>-->
+            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
             </ul>
             <script>
             function deleted(name, number) {
@@ -156,20 +162,29 @@
                 }
             }
             </script>
-        </details>
+            </div>            
+        </div>
+        </div>
+        </div>
         {% endfor %}
+        </div>
         </div>
 
         <div id="Admin" class="tabcontent">
+        <div class="accordion" id="adminAccordian">
         {% for person in admin %}
-        <details>
-            <summary>{{person.fname}} {{person.lname}}</summary>
-            <ul>
-            <p>Type of User: {{person.type}}</p>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                {{person.fname}} {{person.lname}}
+                </button>
+            </h2>
+            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#adminAccordian">
+            <div class="accordion-body">
+            <div class="contact-details">
+            <p>Type of User: Admin</p>
             <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
-
-            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')">Delete User</button>
-            <!--<p><a href = "/deleteuser/{{person.usernum}}"><button>Delete User</button></a></p>-->
+            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
             </ul>
             <script>
             function deleted(name, number) {
@@ -178,17 +193,29 @@
                 }
             }
             </script>
-        </details>
+            </div>            
+        </div>
+        </div>
+        </div>
         {% endfor %}
+        </div>
         </div>
 
         <div id="Client" class="tabcontent">
+        <div class="accordion" id="clientAccordian">
         {% for person in client %}
-        <details>
-            <summary>{{person.fname}} {{person.lname}}</summary>
-            <ul>
-            <p>Type of User: {{person.type}}</p>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                {{person.fname}} {{person.lname}}
+                </button>
+            </h2>
+            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#clientAccordian">
+            <div class="accordion-body">
+            <div class="contact-details">
+            <p>Type of User: Client</p>
             <p>Email/Phone Number: {{person.userid}}</p>
+    
             <h3> Caregivers: </h3>
             <ul>
             {% if not person['caregiver'] %}
@@ -198,10 +225,9 @@
                 <li><a href = "mailto:{{c.userid}}">{{c.fname}} {{c.lname}} </a></li>
             {% endfor %}
             </ul>
-            <p><a href = "/addcaregiver/{{person.usernum}}"><button>Assign Caregivers</button></a></p>
+            <p><a href = "/addcaregiver/{{person.usernum}}"><button class="btn btn-outline-primary">Assign Caregivers</button></a></p>
 
-            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')">Delete User</button>
-            <!--<p><a href = "/deleteuser/{{person.usernum}}"><button>Delete User</button></a></p>-->
+            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
             </ul>
             <script>
             function deleted(name, number) {
@@ -210,20 +236,30 @@
                 }
             }
             </script>
-        </details>
+            </div>            
+        </div>
+        </div>
+        </div>
         {% endfor %}
+        </div>
         </div>
 
         <div id="Caregiver" class="tabcontent">
+        <div class="accordion" id="caregiverAccordian">
         {% for person in caregiver %}
-        <details>
-            <summary>{{person.fname}} {{person.lname}}</summary>
-            <ul>
-            <p>Type of User: {{person.type}}</p>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}">
+                {{person.fname}} {{person.lname}}
+                </button>
+            </h2>
+            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#caregiverAccordian">
+            <div class="accordion-body">
+            <div class="contact-details">
+            <p>Type of User: Caregiver</p>
             <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
 
-            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')">Delete User</button>
-            <!--<p><a href = "/deleteuser/{{person.usernum}}"><button>Delete User</button></a></p>-->
+            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
             </ul>
             <script>
             function deleted(name, number) {
@@ -232,8 +268,12 @@
                 }
             }
             </script>
-        </details>
+            </div>            
+        </div>
+        </div>
+        </div>
         {% endfor %}
+        </div>
         </div>
 
         <script>
