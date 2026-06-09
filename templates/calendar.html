@@ -66,11 +66,12 @@
         {% endif %}
         {% endwith %}
         <h1 style="margin-left: 20px;">View Timesheets via Calendar</h1>
+        <div id="calendar" style="margin-left: 20px; max-width: 1425px;">
         <div id = "calendar"></div>
         <script>
             let calendarEl = document.getElementById('calendar');
 
-            let calendar = new FullCalendar.Calendar(calendarEl, {contentHeight: 550, aspectRatio: 1,
+            let calendar = new FullCalendar.Calendar(calendarEl, {contentHeight: 550, aspectRatio: 20, dayMaxEventRows: true,
                 events: [
                     {% for timesheet in timesheets %}
                         {
@@ -137,6 +138,7 @@
 
             calendar.render();
         </script>
+        </div>
         
         <!-- popup window -->
         <div id="eventModal" style="display:none; position:fixed; top:50%; left:50%; transform:translate(-50%, -50%); background:white; border:1px solid #ccc; padding:25px; z-index:2000; border-radius:8px; box-shadow:0 4px 15px rgba(0,0,0,0.2); min-width:300px;">
