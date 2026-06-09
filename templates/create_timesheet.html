@@ -63,50 +63,50 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
-        <h1>Create Timesheet</h1>
-        <form action="/createtimesheet" method = "POST">
-        <table>
-          <tr>
-            <td><label for="client">Client:</label></td>
-            <td><input type="text" list="client" id="client-input" name="client_id" class="form-select form-select-sm">
-            <datalist id="client">
-            {% for c in cl_list %}
-                <option value="{{ c.userid }}" label="{{ c.fname }} {{ c.lname }}"></option>
-            {% endfor %}
-            </datalist>
-          </td>
-          </tr>
-          <tr>
-            <td><label for="caregiver">Caregiver:</label></td>
-            <td><input type="text" list="caregiver" id="caregiver-input" name="caregiver_id" class="form-select form-select-sm">
-            <datalist id="caregiver">
-            {% for c in cr_list %}
-                <option value="{{ c.userid }}" label="{{ c.fname }} {{ c.lname }}"></option>
-            {% endfor %}
-            </datalist>
-          </td>
-          </tr>
-          <tr>
-            <td><label for="date">Date:</label></td>
-            <td><input type="date" name="date" class="form-control form-control-sm" required><br></td>
-          </tr>
-          <tr>
-            <td><label for="reason">Reason:</label></td>
-            <td><select class = "form-select form-select-sm" name="reason" id = "reason" required>
-                <option value="">-----</option>
-                <option value="Out of window clock-in">Out of window clock-in</option>
-                <option value="Out of window clock-out">Out of window clock-out</option>
-                <option value="Clock-in is GPS out of range">Clock-in is GPS out of range</option>
-                <option value="Clock-out is GPS out of range">Clock-out is GPS out of range</option>
-                <option value="Missing clock-in">Missing clock-in</option>
-                <option value="Missing clock-out">Missing clock-out</option>
-                <option value="Tasks not noted">Tasks not noted</option>
-                <option value="Not enough tasks noted">Not enough tasks noted</option>
-            </select></td>
-          </tr>
-        </table>
-      <input type="submit" name="submit" class = "btn btn-primary">
-      </form>
-      
+
+        <h2 style="text-align: center;">Create New Timesheet Error</h2><br>
+        <div class="card" style="width: 20rem; margin: auto;">
+            <div class="card-body">
+            <form action="/createtimesheet" method = "POST">
+              <div class="row g-2 align-items-end">
+                <label for="client">Client:</label>
+                <input type="text" list="client" id="client-input" name="client_id" class="form-select form-select-sm">
+                <datalist id="client">
+                  {% for c in cl_list %}
+                    <option value="{{ c.userid }}" label="{{ c.fname }} {{ c.lname }}"></option>
+                  {% endfor %}
+                </datalist>
+              </div><br>
+              <div class="row g-2 align-items-end">
+                <label for="caregiver">Caregiver:</label>
+                <input type="text" list="caregiver" id="caregiver-input" name="caregiver_id" class="form-select form-select-sm">
+                <datalist id="caregiver">
+                  {% for c in cr_list %}
+                    <option value="{{ c.userid }}" label="{{ c.fname }} {{ c.lname }}"></option>
+                  {% endfor %}
+                </datalist>
+              </div><br>
+              <div class="row g-2 align-items-end">
+                <label for="date">Date:</label>
+                <input type="date" name="date" class="form-control form-control-sm" required>
+              </div><br>
+              <div class="row g-2 align-items-end">
+                <label for="reason">Reason:</label>
+                <select class = "form-select form-select-sm" name="reason" id = "reason" required>
+                  <option value="">-----</option>
+                  <option value="Out of window clock-in">Out of window clock-in</option>
+                  <option value="Out of window clock-out">Out of window clock-out</option>
+                  <option value="Clock-in is GPS out of range">Clock-in is GPS out of range</option>
+                  <option value="Clock-out is GPS out of range">Clock-out is GPS out of range</option>
+                  <option value="Missing clock-in">Missing clock-in</option>
+                  <option value="Missing clock-out">Missing clock-out</option>
+                  <option value="Tasks not noted">Tasks not noted</option>
+                  <option value="Not enough tasks noted">Not enough tasks noted</option>
+                </select>
+              </div><br>
+              <input type="submit" name="submit" class = "btn btn-primary">
+            </form>
+          </div>
+        </div>
     </body>
 </html>
