@@ -47,13 +47,13 @@ CREATE TABLE timesheet (
 
 
 -- adding a test admin (for logging in)
-INSERT INTO people VALUES ('admin@gmail.com', 'Test', 'Admin', 'Admin', 1);
+INSERT INTO people VALUES ('admin@gmail.com', 'John', 'Smith', 'Admin', 1);
 INSERT INTO admin VALUES ('admin@gmail.com', 'pass');
 
 -- adding a test client and 2 caregivers
-INSERT INTO people VALUES ('client@gmail.com', 'Test', 'Client', 'Client', 2);
-INSERT INTO people VALUES ('caregiver1@gmail.com', 'Test1', 'Caregiver', 'Caregiver', 3);
-INSERT INTO people VALUES ('caregiver2@gmail.com', 'Test2', 'Caregiver', 'Caregiver', 4);
+INSERT INTO people VALUES ('client@gmail.com', 'Jane', 'Doe', 'Client', 2);
+INSERT INTO people VALUES ('caregiver1@gmail.com', 'Joe', 'Bloggs', 'Caregiver', 3);
+INSERT INTO people VALUES ('caregiver2@gmail.com', 'Jack', 'Public', 'Caregiver', 4);
 INSERT INTO clients VALUES ('client@gmail.com', 'caregiver1@gmail.com');
 INSERT INTO clients VALUES ('client@gmail.com', 'caregiver2@gmail.com');
 --adding a timesheet error
