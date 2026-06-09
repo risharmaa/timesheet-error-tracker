@@ -116,28 +116,44 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
-        <h1>View Timesheet Errors</h1>
-        <h5>Search for Timesheet Errors:</h5>
-        <form action="/viewtimesheets" method = "GET">
-        <label for="client">Client:</label>
-        <select name="client">
-        <option value = "">------</option>
-        {% for c in clients %}
-            <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
-        {% endfor %}
-        </select>
-        <label for="caregiver">Caregiver:</label>
-        <select name="caregiver">
-        <option value = "">------</option>
-        {% for c in caregivers %}
-            <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
-        {% endfor %}
-        </select>
-        <label for="date">Date:</label>
-        <input type="date" name="date">
-        <button type = "submit" class = "btn btn-primary"> Search </button>
-        </form>
+        <h1 style="margin-left: 20px;">View Timesheet Errors</h1>
+        <p></p>
+        <div class="card" style="width: 75rem; margin-left: 20px;">
+            <h5 class="card-header">Search for Timesheet Errors:</h5>
+            <div class="card-body">
+                <form action="/viewtimesheets" method = "GET">
+                <div class="row g-2 align-items-end">
+                    <div class="col-sm-3">
+                    <label for="client">Client:</label>
+                    <select name="client" class="form-select">
+                        <option value = "">------</option>
+                        {% for c in clients %}
+                        <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
+                        {% endfor %}
+                    </select>
+                    </div>
+                    <div class="col-sm-3">
+                    <label for="caregiver">Caregiver:</label>
+                    <select name="caregiver" class="form-select">
+                        <option value = "">------</option>
+                        {% for c in caregivers %}
+                        <option value="{{c.userid}}">{{c.fname}} {{c.lname}}</option>
+                        {% endfor %}
+                    </select>
+                    </div>
+                    <div class="col-sm-3">
+                    <label for="date">Date:</label>
+                    <input type="date" name="date" class="form-control">
+                    </div>
+                    <div class="col-sm-2">
+                    <button type = "submit" class = "btn btn-primary"> Search </button>
+                    </div>
+                </div>
+                </form>
+            </div>
+        </div>
 
+        <p></p>
 
 
         <div class="tab">
