@@ -63,18 +63,25 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
-        <div style="border: 1px solid #c2c2c2; background-color: #fff9e6; padding: 15px; margin: 20px 0;">
-        <p>A timesheet error for <b>{{client_name.fname}} {{client_name.lname}}</b> and <b>{{caregiver_name.fname}} {{caregiver_name.lname}}</b> on <b>{{session.timesheet.date}}</b> for <b>{{reason}}</b> already exists. Would you still like to create this timesheet error?</p>
-        </div>
-    
-        <div style="display: flex; gap: 15px;">
-        <a href="/confirmtimesheet">
-            <button type="button" class = "rounded-3 btn btn-success">Yes</button>
-        </a>
+        <div class="container mt-3">
+            <div class="card" style="width: 75rem; margin-left: 20px;">
+                <div class="card-body">
+                    <h3>Confirm Timesheet</h3>
+                    <br>
+                    <p>You are trying to make a timesheet error for <b>{{client_name.fname}} {{client_name.lname}}</b> and <b>{{caregiver_name.fname}} {{caregiver_name.lname}}</b> on <b>{{session.timesheet.date}}</b> for <b>{{session.timesheet.reason}}</b>.</p>
+                    <p>However, a timesheet error for <b>{{client_name.fname}} {{client_name.lname}}</b> and <b>{{caregiver_name.fname}} {{caregiver_name.lname}}</b> on <b>{{session.timesheet.date}}</b> for <b>{{reason}}</b> already exists.</p>
+                    <p>Would you still like to create this timesheet error?</p>
+                    <div style="display: flex; gap: 15px;">
+                        <a href="/confirmtimesheet">
+                        <button type="button" class = "rounded-3 btn btn-success">Yes</button>
+                        </a>
 
-        <a href="/canceltimesheet">
-            <button type="button" class = "rounded-3 btn btn-danger">No</button>
-        </a>
+                        <a href="/canceltimesheet">
+                        <button type="button" class = "rounded-3 btn btn-danger">No</button>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>

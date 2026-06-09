@@ -584,8 +584,8 @@ def confirm():
 @app.route("/canceltimesheet")
 def cancel():
     session.pop('timesheet', None)
-    flash("Timesheet error creation canceled", "danger")
-    return redirect("/createtimesheet")
+    flash("Timesheet error creation canceled.", "danger")
+    return redirect("/viewtimesheets")
 
 
 
