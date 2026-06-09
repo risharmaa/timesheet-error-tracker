@@ -65,11 +65,12 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
+        <h1 style="margin-left: 20px;">View Timesheets via Calendar</h1>
         <div id = "calendar"></div>
         <script>
             let calendarEl = document.getElementById('calendar');
 
-            let calendar = new FullCalendar.Calendar(calendarEl, {contentHeight: 550, aspectRatio: 2,
+            let calendar = new FullCalendar.Calendar(calendarEl, {contentHeight: 550, aspectRatio: 1,
                 events: [
                     {% for timesheet in timesheets %}
                         {

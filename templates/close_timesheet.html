@@ -63,27 +63,32 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
+        <div class="container mt-3">
         <h1>Close Timesheet Error</h1>
-        <p><b>Client:</b> {{info.clfname}} {{info.cllname}}</p>
-        <p><b>Caregiver:</b> {{info.crfname}} {{info.crlname}}</p>
-        <p><b>Date opened:</b> {{info.date}} </p>
-        <p><b>Reason opened:</b> {{info.reason}}</p>
-        <form action="/closetimesheet/{{info.num}}" method = "POST">
-        <table>
-          <tr>
-            <td><label for="day_r">Date Received:</label></td>
-            <td><input type="date" name="day_r" required><br></td>
-          </tr>
-          <tr>
-            <td><label for="kind">Method Received:</label></td>
-            <td><select name="kind" id = "kind" required>
-                <option value="">-----</option>
-                <option value="E-signature">E-signature</option>
-                <option value="Paper Timesheet">Paper Timesheet</option>
-            </select></td>
-          </tr>
-        </table>
-      <input type="submit" name="submit">
-      </form>
+        <br>
+        <div class="card" style="width: 75rem; margin-left: 20px;">
+            <div class="card-body">
+                <p><b>Client:</b> {{info.clfname}} {{info.cllname}}</p>
+                <p><b>Caregiver:</b> {{info.crfname}} {{info.crlname}}</p>
+                <p><b>Date opened:</b> {{info.date}} </p>
+                <p><b>Reason opened:</b> {{info.reason}}</p>
+                <form action="/closetimesheet/{{info.num}}" method = "POST">
+                    <div class="row g-2 align-items-end">
+                        <label for ="day_r">Date Received:</label>
+                        <input type="date" name = "day_r" class="form-control" required>
+                    </div><br>
+                    <div class="row g-2 align-items-end">
+                        <label for ="kind">Method Received</label>
+                        <select name="kind" id = "kind" required class="form-select">
+                            <option value="">-----</option>
+                            <option value="E-signature">E-signature</option>
+                            <option value="Paper Timesheet">Paper Timesheet</option>
+                        </select>
+                    </div><br>
+                    <input type="submit" name="submit" class="btn btn-success">
+                </form>
+            </div>
+        </div>
+        </div>
     </body>
 </html>
