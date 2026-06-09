@@ -102,17 +102,32 @@
         {% endfor %}
         {% endif %}
         {% endwith %}
-        <h1>Contact List</h1>
-        <h5>Search for contacts:</h5>
-        <form action="/contactlist" method = "GET">
-        <label for="email">Email:</label>
-        <input type="text" name="email">
-        <label for="fname">First Name:</label>
-        <input type="text" name="fname">
-        <label for="lname">Last Name:</label>
-        <input type="text" name="lname">
-        <button type = "submit" class="btn btn-primary"> Search </button>
+        <h1 style="margin-left:20px">Contact List</h1>
+        <p></p>
+        <div class="card" style="width: 75rem; margin-left: 20px;">
+            <h5 class="card-header">Search for contacts:</h5>
+            <div class="card-body">
+            <form action="/contactlist" method = "GET">
+                <div class="row g-2 align-items-end">
+                    <div class="col-sm-3">
+                    <label for="email">Email:</label>
+                    <input type="text" name="email" class="form-control">
+                    </div>
+                    <div class="col-sm-3">
+                    <label for="fname">First Name:</label>
+                    <input type="text" name="fname" class="form-control">
+                    </div>
+                    <div class="col-sm-3">
+                    <label for="lname">Last Name:</label>
+                    <input type="text" name="lname" class="form-control">
+                    </div>
+                    <div class="col-sm-2">
+                    <button type = "submit" class="btn btn-primary"> Search </button>
+                    </div>
+                </div>
         </form>
+        </div>
+        </div>
         <p> </p>
         <div class="tab">
             <button class="tablinks" onclick="openInfo(event, 'All')">All Users</button>
