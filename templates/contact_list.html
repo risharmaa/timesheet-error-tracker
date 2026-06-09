@@ -16,45 +16,6 @@
             font-family: 'Lato', sans-serif;
         }
         </style>
-        <style>
-            /* Style the tab */
-            .tab {
-                display: flex;
-                overflow: hidden;
-                border: 1px solid #ccc;
-                /*background-color: #f1f1f1;*/
-            }
-
-            /* Style the buttons inside the tab */
-            .tab button {
-                background-color: inherit;
-                float: left;
-                border: none;
-                outline: none;
-                cursor: pointer;
-                padding: 14px 16px;
-                transition: 0.3s;
-                font-size: 18px;
-                flex: 1;
-            }
-            /* Change background color of buttons on hover */
-            .tab button:hover {
-                background-color: #ddd;
-            }
-
-            /* Create an active/current tablink class */
-            .tab button.active {
-                background-color: #a5c8fd;
-            }
-
-            /* Style the tab content */
-            .tabcontent {
-                display: none;
-                padding: 6px 12px;
-                border: 1px solid #ccc;
-                border-top: none;
-            }
-        </style>
     </head>
     <body>
         <nav class="navbar navbar-expand-sm">
@@ -128,36 +89,49 @@
         </form>
         </div>
         </div>
-        <p> </p>
-        <div class="tab">
-            <button class="tablinks" onclick="openInfo(event, 'All')">All Users</button>
-            <button class="tablinks" onclick="openInfo(event, 'Admin')">Admin</button>
-            <button class="tablinks" onclick="openInfo(event, 'Client')">Clients</button>
-            <button class="tablinks" onclick="openInfo(event, 'Caregiver')">Caregivers</button>
-        </div>
+        <br>
 
-        <div id="All" class="tabcontent">
-        <div class="accordion" id="allAccordian">
-        {% for person in contacts %}
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="heading{{ loop.index }}">
+        <div class="container mt-1">
+             <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                <a class="nav-link active" data-bs-toggle="tab" href="#all">All Contacts</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#admin">Admin</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#client">Clients</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link" data-bs-toggle="tab" href="#caregiver">Caregivers</a>
+                </li>
+            </ul>
+
+            <!-- Tab panes -->
+            <div class="tab-content">
+            <div id="all" class="container tab-pane active"><br>
+                <div class="accordion" id="allAccordian">
+                {% for person in contacts %}
+                <div class="accordion-item">
+                <h2 class="accordion-header" id="heading{{ loop.index }}">
                 <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
                 {{person.fname}} {{person.lname}}
                 </button>
-            </h2>
-            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#allAccordian">
-            <div class="accordion-body">
-            <div class="contact-details">
-            <p>Type of User: {{person.type}}</p>
-            {% if person.type == "Client" %}
-                <p>Email/Phone Number: {{person.userid}}</p>
-            {% else %}
-                <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
-            {% endif %}
+                 </h2>
+                <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#allAccordian">
+                <div class="accordion-body">
+                <div class="contact-details">
+                <p>Type of User: {{person.type}}</p>
+                {% if person.type == "Client" %}
+                    <p>Email/Phone Number: {{person.userid}}</p>
+                {% else %}
+                    <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
+                {% endif %}
 
-            {% if person.type == "Client" %}
-                <h3> Caregivers: </h3>
-                <ul>
+                {% if person.type == "Client" %}
+                    <h3> Caregivers: </h3>
+                    <ul>
                 {% if not person['caregiver'] %}
                     <li>No Caregivers Assigned.</li>
                 {% endif %}
@@ -178,133 +152,118 @@
             }
             </script>
             </div>            
-        </div>
-        </div>
-        </div>
-        {% endfor %}
-        </div>
-        </div>
-
-        <div id="Admin" class="tabcontent">
-        <div class="accordion" id="adminAccordian">
-        {% for person in admin %}
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="heading{{ loop.index }}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
-                {{person.fname}} {{person.lname}}
-                </button>
-            </h2>
-            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#adminAccordian">
-            <div class="accordion-body">
-            <div class="contact-details">
-            <p>Type of User: Admin</p>
-            <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
-            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
-            </ul>
-            <script>
-            function deleted(name, number) {
-                if (confirm("Would you like to delete " + name + "? You can not undo this action.")) {
-                    window.location.replace("/deleteuser/" + number)
-                }
-            }
-            </script>
-            </div>            
-        </div>
-        </div>
-        </div>
-        {% endfor %}
-        </div>
-        </div>
-
-        <div id="Client" class="tabcontent">
-        <div class="accordion" id="clientAccordian">
-        {% for person in client %}
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="heading{{ loop.index }}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
-                {{person.fname}} {{person.lname}}
-                </button>
-            </h2>
-            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#clientAccordian">
-            <div class="accordion-body">
-            <div class="contact-details">
-            <p>Type of User: Client</p>
-            <p>Email/Phone Number: {{person.userid}}</p>
-    
-            <h3> Caregivers: </h3>
-            <ul>
-            {% if not person['caregiver'] %}
-                <li>No Caregivers Assigned.</li>
-            {% endif %}
-            {% for c in person['caregiver'] %}
-                <li><a href = "mailto:{{c.userid}}">{{c.fname}} {{c.lname}} </a></li>
+            </div>
+            </div>
+            </div>
             {% endfor %}
-            </ul>
-            <p><a href = "/addcaregiver/{{person.usernum}}"><button class="btn btn-outline-primary">Assign Caregivers</button></a></p>
+            </div>
+            </div>
+            <div id="admin" class="container tab-pane fade"><br>
+                <div class="accordion" id="adminAccordian">
+                {% for person in admin %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ loop.index }}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
+                        {{person.fname}} {{person.lname}}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#adminAccordian">
+                    <div class="accordion-body">
+                    <div class="contact-details">
+                    <p>Type of User: Admin</p>
+                    <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
+                    <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
+                    </ul>
+                    <script>
+                    function deleted(name, number) {
+                        if (confirm("Would you like to delete " + name + "? You can not undo this action.")) {
+                            window.location.replace("/deleteuser/" + number)
+                        }
+                    }
+                    </script>
+                    </div>            
+                </div>
+                </div>
+                </div>
+                {% endfor %}
+                </div>
+            </div>
+            <div id="client" class="container tab-pane fade"><br>
+                <div class="accordion" id="clientAccordian">
+                {% for person in client %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ loop.index }}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
+                        {{person.fname}} {{person.lname}}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#clientAccordian">
+                    <div class="accordion-body">
+                    <div class="contact-details">
+                    <p>Type of User: Client</p>
+                    <p>Email/Phone Number: {{person.userid}}</p>
+    
+                    <h3> Caregivers: </h3>
+                    <ul>
+                    {% if not person['caregiver'] %}
+                        <li>No Caregivers Assigned.</li>
+                    {% endif %}
+                    {% for c in person['caregiver'] %}
+                        <li><a href = "mailto:{{c.userid}}">{{c.fname}} {{c.lname}} </a></li>
+                    {% endfor %}
+                    </ul>
+                    <p><a href = "/addcaregiver/{{person.usernum}}"><button class="btn btn-outline-primary">Assign Caregivers</button></a></p>
 
-            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
-            </ul>
-            <script>
-            function deleted(name, number) {
-                if (confirm("Would you like to delete " + name + "? You can not undo this action.")) {
-                    window.location.replace("/deleteuser/" + number)
-                }
-            }
-            </script>
-            </div>            
-        </div>
-        </div>
-        </div>
-        {% endfor %}
-        </div>
-        </div>
+                    <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
+                    </ul>
+                    <script>
+                    function deleted(name, number) {
+                        if (confirm("Would you like to delete " + name + "? You can not undo this action.")) {
+                            window.location.replace("/deleteuser/" + number)
+                        }
+                    }
+                    </script>
+                    </div>            
+                </div>
+                </div>
+                </div>
+                {% endfor %}
+                </div>
+                
+            </div>
+            <div id="caregiver" class="container tab-pane fade"><br>
+                <div class="accordion" id="caregiverAccordian">
+                {% for person in caregiver %}
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="heading{{ loop.index }}">
+                        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style = "background-color: transparent;">
+                        {{person.fname}} {{person.lname}}
+                        </button>
+                    </h2>
+                    <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#caregiverAccordian">
+                    <div class="accordion-body">
+                    <div class="contact-details">
+                    <p>Type of User: Caregiver</p>
+                    <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
 
-        <div id="Caregiver" class="tabcontent">
-        <div class="accordion" id="caregiverAccordian">
-        {% for person in caregiver %}
-        <div class="accordion-item">
-            <h2 class="accordion-header" id="heading{{ loop.index }}">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style = "background-color: transparent;">
-                {{person.fname}} {{person.lname}}
-                </button>
-            </h2>
-            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#caregiverAccordian">
-            <div class="accordion-body">
-            <div class="contact-details">
-            <p>Type of User: Caregiver</p>
-            <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
-
-            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
-            </ul>
-            <script>
-            function deleted(name, number) {
-                if (confirm("Would you like to delete " + name + "? You can not undo this action.")) {
-                    window.location.replace("/deleteuser/" + number)
-                }
-            }
-            </script>
-            </div>            
+                    <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
+                    </ul>
+                    <script>
+                    function deleted(name, number) {
+                        if (confirm("Would you like to delete " + name + "? You can not undo this action.")) {
+                            window.location.replace("/deleteuser/" + number)
+                        }
+                    }
+                    </script>
+                    </div>            
+                </div>
+                </div>
+                </div>
+                {% endfor %}
+                </div>
+            </div>
+            </div>
         </div>
-        </div>
-        </div>
-        {% endfor %}
-        </div>
-        </div>
-
-        <script>
-        function openInfo(evt, kind) {
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-            tablinks = document.getElementsByClassName("tablinks");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].className = tablinks[i].className.replace(" active", "");
-            }
-            document.getElementById(kind).style.display = "block";
-            evt.currentTarget.className += " active";
-        }
-        </script>
+        
     </body>
 </html>
