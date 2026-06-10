@@ -84,13 +84,16 @@
                                 {% if timesheet.color == '#FF0000' %}
                                     status: 'Need to send',
                                     send: '/calendar/senttimesheet/{{timesheet.num}}',
+                                    delete: '/calendar/deletetimesheet/{{timesheet.num}}'
                                 {% elif timesheet.color == '#FDBE02' %}
                                     status: 'Awaiting Response',
                                     close: '/calendar/closetimesheet/{{timesheet.num}}',
+                                    delete: '/calendar/deletetimesheet/{{timesheet.num}}'
                                 {% else %}
                                     status: 'Closed',
                                     day_r: '{{timesheet.day_r}}',
                                     method: '{{timesheet.type}}',
+                                    delete: '/calendar/deletetimesheet/{{timesheet.num}}'
                                 {% endif %}
                             }
                         }
@@ -108,7 +111,8 @@
                     // link to update status to sent
                     let sendContainer = document.getElementById('modalSend');
                     if (props.send) {
-                        sendContainer.innerHTML = `<a href="${props.send}"><button class = "btn btn-outline-warning">Update Timesheet Error Status to Sent</button></a>`;
+                        sendContainer.innerHTML = 
+                            `<a href="${props.send}"><button class = "btn btn-outline-warning">Update Timesheet Error Status to Sent</button></a> <a href="${props.delete}"><button class = "btn btn-outline-danger">Delete Timesheet Error</button></a>`;
                     } else {
                         sendContainer.innerHTML = ''; 
                     }
@@ -116,7 +120,8 @@
                     // link to close timesheet error
                     let closeContainer = document.getElementById('modalClose');
                     if (props.close) {
-                        closeContainer.innerHTML = `<a href="${props.close}"><button class = "btn btn-outline-success">Close Timesheet Error</button></a>`;
+                        closeContainer.innerHTML = 
+                            `<a href="${props.close}"><button class = "btn btn-outline-success">Close Timesheet Error</button></a> <a href="${props.delete}"><button class = "btn btn-outline-danger">Delete Timesheet Error</button></a>`;;
                     } else {
                         closeContainer.innerHTML = '';
                     }
@@ -125,7 +130,8 @@
                     let closedDetailsContainer = document.getElementById('modalClosedDetails');
                     if (closedDetailsContainer) {
                         if (props.status === 'Closed') {
-                            closedDetailsContainer.innerHTML = `<p><b>Day Received:</b> ${props.day_r}</p><p><b>Received via:</b> ${props.method}</p>`;
+                            closedDetailsContainer.innerHTML = 
+                                `<p><b>Day Received:</b> ${props.day_r}</p><p><b>Received via:</b> ${props.method}</p> <a href="${props.delete}"><button class = "btn btn-outline-danger">Delete Timesheet Error</button></a>`;;
                         } else {
                             closedDetailsContainer.innerHTML = '';
                         }

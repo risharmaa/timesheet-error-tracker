@@ -498,6 +498,7 @@ def view_timesheets():
             formatted_data = [(item,) for item in deletions]
             delete = "You have deleted " + str(number) + " timesheet errors."
             cursor.executemany("DELETE from timesheet WHERE num = %s", (formatted_data))
+        mydb.commit()
         flash(delete, "success")
         return redirect("/viewtimesheets")
 
@@ -694,7 +695,38 @@ def cancel():
     flash("Timesheet error creation canceled.", "danger")
     return redirect("/viewtimesheets")
 
+@app.route("/home/deletetimesheet/<num>")
+def home_delete_timesheet(num):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
 
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("DELETE from timesheet WHERE num = %s", (num,))
+    mydb.commit()
+    return redirect("/")
+
+@app.route("/calendar/deletetimesheet/<num>")
+def calendar_delete_timesheet(num):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("DELETE from timesheet WHERE num = %s", (num,))
+    mydb.commit()
+    return redirect("/calendar")
+
+@app.route("/deletetimesheet/<num>")
+def delete_timesheet(num):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("DELETE from timesheet WHERE num = %s", (num,))
+    mydb.commit()
+    return redirect("/viewtimesheets")
 
 
 if __name__ == "__main__":
