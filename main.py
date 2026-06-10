@@ -407,7 +407,7 @@ def view_timesheets():
 
     #get today's date to limit all closed timesheets to be within the year
     today = date.today()
-    first = today.replace(year=2025)
+    first = today - timedelta(days=365)
     last = today
 
     if client and caregiver and search_date:
@@ -727,6 +727,44 @@ def delete_timesheet(num):
     cursor.execute("DELETE from timesheet WHERE num = %s", (num,))
     mydb.commit()
     return redirect("/viewtimesheets")
+
+@app.route("/weeklydashboard")
+def weekly_dashboard():
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+    
+    # this should give a recap of the past week: what errors have been created/closed
+
+    # get today's date:
+    today = date.today()
+    first = today - timedelta(days=7)
+    first_formatted = first.strftime("%A, %B %d, %Y")
+    last = today
+    last_formatted = last.strftime("%A, %B %d, %Y")
+    
+
+    return render_template("weekly_dashboard.html", first = first_formatted, last = last_formatted)
+
+@app.route("/biweeklydashboard")
+def biweekly_dashboard():
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+    
+    # same as weekly dashboard
+    # get today's date:
+    today = date.today()
+    first = today - timedelta(days=14)
+    first_formatted = first.strftime("%A, %B %d, %Y")
+    last = today
+    last_formatted = last.strftime("%A, %B %d, %Y")
+
+    # also show number of errors for each caregiver/client relationship
+
+    # make a pi chart that counts how many of each reason there were
+
+    return render_template("biweekly_dashboard.html", first = first_formatted, last = last_formatted)
 
 
 if __name__ == "__main__":
