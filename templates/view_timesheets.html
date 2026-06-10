@@ -183,15 +183,20 @@
             <div id="closed" class="container tab-pane fade"><br>
                 {% if closed %}
                 <h3>Closed timesheets:</h3>
+                <button id="toggle-delete" class="btn btn-outline-primary mb-3">Select to Delete</button>
+                <form method="POST" action="/viewtimesheets" id="delete-form">
+                <button id="delete-btn" class="btn btn-danger d-none">Delete Selected</button>               
                 {% else %}
                 <h3>No timesheets are closed.</h3>
                 {% endif %}
+                <br>
                 <div class="accordion" id="closedAccordian">
                 {% for timesheet in closed %}
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading{{ loop.index }}">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
-                        {{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}
+                            <input type = "checkbox" name = "selected" value="{{timesheet.num}}" class="form-check-input delete-checkbox d-none me-2">
+                            {{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}
                         </button>
                     </h2>
                     <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#closedAccordian">
@@ -209,9 +214,30 @@
                 </div>
                 {% endfor %}
                 </div>
+                </form>
             </div>
             </div>
         </div>
+
+        <script>
+            document.getElementById("toggle-delete").addEventListener("click", function() {
+            let checkboxes = document.querySelectorAll(".delete-checkbox");
+            let deleteBtn = document.getElementById("delete-btn");
+            let toggleBtn = document.getElementById("toggle-delete");
+
+            checkboxes.forEach(cb => {
+                cb.classList.toggle("d-none");
+            });
+
+            deleteBtn.classList.toggle("d-none");
+
+            if (deleteBtn.classList.contains("d-none")) {
+                toggleBtn.innerText = "Select to Delete";
+            } else {
+                toggleBtn.innerText = "Cancel";
+            }
+            });
+        </script>
 
     </body>
 </html>

@@ -385,7 +385,7 @@ def get_caregivers(userid):
     print("caregivers found:", caregivers)
     return jsonify(caregivers)
     
-@app.route("/viewtimesheets", methods = ["GET"])
+@app.route("/viewtimesheets", methods = ["GET", "POST"])
 def view_timesheets():
     # check if user is logged in:
     if 'user' not in session:
@@ -482,6 +482,24 @@ def view_timesheets():
 
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND (date BETWEEN %s AND %s) ORDER BY date DESC", (first, last))
         closed = cursor.fetchall()
+    
+    if request.method == "POST":
+        deletions = request.form.getlist('selected')
+        number = len(deletions)
+        if number == 0:
+            delete = "You have not deleted any timesheet errors."
+            flash(delete, "success")
+            return redirect("/viewtimesheets")
+        elif number == 1:
+            delete = "You have deleted " + str(number) + " timesheet error."
+            cursor.execute("DELETE from timesheet WHERE num = %s", (deletions[0],))
+        else:
+            # convert deletions into a tuple for executemany
+            formatted_data = [(item,) for item in deletions]
+            delete = "You have deleted " + str(number) + " timesheet errors."
+            cursor.executemany("DELETE from timesheet WHERE num = %s", (formatted_data))
+        flash(delete, "success")
+        return redirect("/viewtimesheets")
 
     return render_template("view_timesheets.html", sent = sent, waiting = waiting, closed = closed, clients = clients, caregivers = caregivers)
 
@@ -655,6 +673,10 @@ def calendar():
 
 @app.route("/confirmtimesheet", methods = ["GET"])
 def confirm():
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
     cursor = mydb.cursor(dictionary=True)
     cursor.execute("INSERT INTO timesheet (clientid, caregiverid, date, reason) VALUES (%s, %s, %s, %s)", (session['timesheet']['client'], session['timesheet']['caregiver'], session['timesheet']['date'], session['timesheet']['reason']))
     mydb.commit()
@@ -664,6 +686,10 @@ def confirm():
 
 @app.route("/canceltimesheet")
 def cancel():
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
     session.pop('timesheet', None)
     flash("Timesheet error creation canceled.", "danger")
     return redirect("/viewtimesheets")
