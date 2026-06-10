@@ -83,10 +83,10 @@
                                 reason: '{{timesheet.reason}}',
                                 {% if timesheet.color == '#FF0000' %}
                                     status: 'Need to send',
-                                    send: '/senttimesheet/{{timesheet.num}}',
+                                    send: '/calendar/senttimesheet/{{timesheet.num}}',
                                 {% elif timesheet.color == '#FDBE02' %}
                                     status: 'Awaiting Response',
-                                    close: '/closetimesheet/{{timesheet.num}}',
+                                    close: '/calendar/closetimesheet/{{timesheet.num}}',
                                 {% else %}
                                     status: 'Closed',
                                     day_r: '{{timesheet.day_r}}',

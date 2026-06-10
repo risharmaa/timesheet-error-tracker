@@ -498,6 +498,34 @@ def sent_timesheet(num):
     flash("Timesheet updated to sent.", "success")
     return redirect("/viewtimesheets")
 
+# use this when updating on home (it redirects back to home)
+@app.route("/home/senttimesheet/<num>")
+def home_sent_timesheet(num):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+    
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("UPDATE timesheet SET sent = TRUE WHERE num = %s", (num,))
+    mydb.commit()
+
+    flash("Timesheet updated to sent.", "success")
+    return redirect("/")
+
+# use this when updating on the calendar (it redirects back to calendar)
+@app.route("/calendar/senttimesheet/<num>")
+def calendar_sent_timesheet(num):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+    
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("UPDATE timesheet SET sent = TRUE WHERE num = %s", (num,))
+    mydb.commit()
+
+    flash("Timesheet updated to sent.", "success")
+    return redirect("/calendar")
+
 @app.route("/closetimesheet/<num>", methods = ["GET", "POST"])
 def close_timesheet(num):
     # check if user is logged in:
@@ -520,6 +548,54 @@ def close_timesheet(num):
         return redirect("/viewtimesheets")
     
     return render_template("close_timesheet.html", info = info)
+
+# use this when closing from the home page (redirects back to home)
+@app.route("/home/closetimesheet/<num>", methods = ["GET", "POST"])
+def home_close_timesheet(num):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
+    cursor = mydb.cursor(dictionary=True)
+
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE num = %s", (num,))
+    info = cursor.fetchone()
+
+    if request.method == "POST":
+        # get information from the form
+        day_r = request.form.get("day_r")
+        kind = request.form.get("kind")
+
+        cursor.execute("UPDATE timesheet SET received = TRUE, type = %s, day_r = %s WHERE num = %s", (kind, day_r, num))
+        mydb.commit()
+        flash("Timesheet closed.", "success")
+        return redirect("/")
+    
+    return render_template("home_close_timesheet.html", info = info)
+
+# use this when closing from the calendar (redirects back to calendar)
+@app.route("/calendar/closetimesheet/<num>", methods = ["GET", "POST"])
+def calendar_close_timesheet(num):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
+    cursor = mydb.cursor(dictionary=True)
+
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE num = %s", (num,))
+    info = cursor.fetchone()
+
+    if request.method == "POST":
+        # get information from the form
+        day_r = request.form.get("day_r")
+        kind = request.form.get("kind")
+
+        cursor.execute("UPDATE timesheet SET received = TRUE, type = %s, day_r = %s WHERE num = %s", (kind, day_r, num))
+        mydb.commit()
+        flash("Timesheet closed.", "success")
+        return redirect("/calendar")
+    
+    return render_template("calendar_close_timesheet.html", info = info)
 
 @app.route("/updatepassword", methods = ["GET", "POST"])
 def update_password():
