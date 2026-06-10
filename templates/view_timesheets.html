@@ -125,6 +125,9 @@
             <div id="send" class="container tab-pane active"><br>
                 {% if sent %}
                 <h3>Time sheets that need to be sent:</h3>
+                <button id="toggle-delete" class="btn btn-outline-primary mb-3">Select to Delete</button>
+                <form method="POST" action="/viewtimesheets" id="delete-form">
+                <button id="delete-btn" class="btn btn-danger d-none">Delete Selected</button>
                 {% else %}
                 <h3>No timesheets need to be sent.</h3>
                 {% endif %}
@@ -133,7 +136,8 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading{{ loop.index }}">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
-                        {{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}
+                            <input type = "checkbox" name = "selected" value="{{timesheet.num}}" class="form-check-input delete-checkbox d-none me-2">
+                            {{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}
                         </button>
                     </h2>
                     <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#sentAccordian">
@@ -154,6 +158,9 @@
             <div id="waiting" class="container tab-pane fade"><br>
                 {% if waiting %}
                 <h3>Timesheets that need to be closed:</h3>
+                <button id="toggle-delete" class="btn btn-outline-primary mb-3">Select to Delete</button>
+                <form method="POST" action="/viewtimesheets" id="delete-form">
+                <button id="delete-btn" class="btn btn-danger d-none">Delete Selected</button>
                 {% else %}
                 <h3>No timesheets need to be closed.</h3>
                 {% endif %}
@@ -162,7 +169,8 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="heading{{ loop.index }}">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
-                        {{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}
+                            <input type = "checkbox" name = "selected" value="{{timesheet.num}}" class="form-check-input delete-checkbox d-none me-2">
+                            {{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}
                         </button>
                     </h2>
                     <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#waitingAccordian">
