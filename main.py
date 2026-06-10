@@ -745,12 +745,12 @@ def weekly_dashboard():
     last_formatted = last.strftime("%A, %B %d, %Y")
 
     # get a list of all timesheet errors that have been created within the week
-    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE (sent = FALSE or received = FALSE) AND (date between %s AND %s", (first, last))
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE (sent = FALSE or received = FALSE) AND (date between %s AND %s)", (first, last))
     created = cursor.fetchall()
 
     # get a list of all timesheet errors that have been closed this week
     cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE received = TRUE AND (day_r between %s AND %s)", (first, last))
-    closed = closed
+    closed = cursor.fetchall()
 
     return render_template("weekly_dashboard.html", first = first_formatted, last = last_formatted, created = created, closed = closed)
 
