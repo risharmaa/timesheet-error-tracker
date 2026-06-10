@@ -74,6 +74,89 @@
 
         <h1 style="text-indent: 20px;">Weekly Dashboard:</h1>
         <h4 style="text-indent: 40px;">{{first}} to {{last}}</h4>
-        
+
+
+        <div class="container mt-2">
+        <div class="row flex-nowrap pb-3">
+    
+        <!-- timesheets that were created but not closed this week: -->
+        <div class="col-12 col-md-6 col-md-4" style="flex: 0 0 auto;">
+        <div class="card h-100">
+        <div class="card-header bg-danger text-white d-flex align-items-center">
+            <h4 class="mb-0 fw-bold">Open Timesheet Errors that were created this week:</h4>
+        </div>
+        <div class="card-body overflow-auto" style="max-height: 400px;" tabindex="0">
+            {% if created %}
+            <div class="accordion" id="sentAccordian">
+            {% for timesheet in created %}
+            <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
+                {{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}
+                </button>
+            </h2>
+            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#sentAccordian">
+            <div class="accordion-body">
+            <div class="timesheet-details">
+            <p><b>Client email/phone number: </b>{{timesheet.clientid}}</p>
+            <p><b>Caregiver email:</b> <a href = "mailto:{{timesheet['caregiverid']}}">{{timesheet.caregiverid}}</a></p>
+            <p><b>Reason:</b> {{timesheet.reason}}</p>
+            {% if timesheet.sent == 0 %}
+                <p><b>Status:</b> Still need to send</p>
+            {% else %}
+                <p><b>Status:</b>Awaiting Response</p>
+            {% endif %}
+            </div>            
+            </div>
+            </div>
+            </div>
+            {% endfor %}
+            </div>
+            {% else %}
+            <p>No open Timesheet Errors were created this week.</h3>
+            {% endif %}
+        </div>
+        </div>
+        </div>
+
+        <!-- timesheets that were closed this week: -->
+        <div class="col-12 col-md-6 col-md-4" style="flex: 0 0 auto;">
+        <div class="card h-100">
+        <div class="card-header bg-warning text-white d-flex align-items-center">
+            <h4 class="mb-0 fw-bold">Timesheet Errors that were closed this week:</h4>
+        </div>
+        <div class="card-body overflow-auto" style="max-height: 400px;" tabindex="0">
+            {% if closed %}
+            <div class="accordion" id="waitingAccordian">
+            {% for timesheet in closed %}
+            <div class="accordion-item">
+            <h2 class="accordion-header" id="heading{{ loop.index }}">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ loop.index }}" aria-expanded="true" aria-controls="collapse{{ loop.index }}" style="background-color: transparent;">
+                {{timesheet.date}} | {{timesheet.clfname}} {{timesheet.cllname}} & {{timesheet.crfname}} {{timesheet.crlname}}
+                </button>
+            </h2>
+            <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#waitingAccordian">
+            <div class="accordion-body">
+            <div class="timesheet-details">
+                <p><b>Client email/phone number: </b>{{timesheet.clientid}}</p>
+                <p><b>Caregiver email:</b> <a href = "mailto:{{timesheet['caregiverid']}}">{{timesheet.caregiverid}}</a></p>
+                <p><b>Reason:</b> {{timesheet.reason}}</p>
+                <p><b>Status:</b> Closed</p>
+                <p><b>Day received:</b> {{timesheet.day_r}}</p>
+                <p>Received via {{timesheet.type}}</p>
+            </div>            
+            </div>
+            </div>
+            </div>
+            {% endfor %}
+            </div>
+            {% else %}
+            <p>No Timesheets need to be closed.</h3>
+            {% endif %}
+        </div>
+        </div>
+        </div>
+        </div>
+
     </body>
 </html>
