@@ -735,6 +735,7 @@ def weekly_dashboard():
         return redirect("/login")
     
     # this should give a recap of the past week: what errors have been created/closed
+    cursor = mydb.cursor(dictionary=True)
 
     # get today's date:
     today = date.today()
@@ -742,9 +743,16 @@ def weekly_dashboard():
     first_formatted = first.strftime("%A, %B %d, %Y")
     last = today
     last_formatted = last.strftime("%A, %B %d, %Y")
-    
 
-    return render_template("weekly_dashboard.html", first = first_formatted, last = last_formatted)
+    # get a list of all timesheet errors that have been created within the week
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE (sent = FALSE or received = FALSE) AND (date between %s AND %s", (first, last))
+    created = cursor.fetchall()
+
+    # get a list of all timesheet errors that have been closed this week
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE received = TRUE AND (day_r between %s AND %s)", (first, last))
+    closed = closed
+
+    return render_template("weekly_dashboard.html", first = first_formatted, last = last_formatted, created = created, closed = closed)
 
 @app.route("/biweeklydashboard")
 def biweekly_dashboard():
@@ -753,6 +761,8 @@ def biweekly_dashboard():
         return redirect("/login")
     
     # same as weekly dashboard
+    cursor = mydb.cursor(dictionary=True)
+
     # get today's date:
     today = date.today()
     first = today - timedelta(days=14)
