@@ -780,11 +780,26 @@ def biweekly_dashboard():
     last = today
     last_formatted = last.strftime("%A, %B %d, %Y")
 
-    # also show number of errors for each caregiver/client relationship
+    # get a list of all timesheet errors that have been created within the week
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE (sent = FALSE or received = FALSE) AND (date between %s AND %s)", (first, last))
+    created = cursor.fetchall()
 
-    # make a pie chart that counts how many of each reason there were
+    # get a list of all timesheet errors that have been closed this week
+    cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE received = TRUE AND (day_r between %s AND %s)", (first, last))
+    closed = cursor.fetchall()
 
-    return render_template("biweekly_dashboard.html", first = first_formatted, last = last_formatted)
+    # get the total count of reasons for all timesheet errors made this week (for a pie chart)
+    cursor.execute("SELECT reason, COUNT(*) AS reason_count FROM timesheet WHERE date between %s AND %s GROUP BY reason ORDER BY reason_count DESC", (first, last))
+    reason = cursor.fetchall()
+    reason_labels = [r["reason"] for r in reason]
+    reason_values = [r["reason_count"] for r in reason]
+
+    # get total count of caregiver/client combos
+    cursor.execute("SELECT clientid, caregiverid, COUNT(*) AS combo_count, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE date BETWEEN %s AND %s GROUP BY caregiverid, clientid ORDER BY combo_count DESC", (first, last))
+    combo = cursor.fetchall()
+
+    return render_template("biweekly_dashboard.html", first = first_formatted, last = last_formatted, created = created, closed = closed, reason = reason, combo = combo, reason_labels = reason_labels, reason_values = reason_values)
+
 
 
 if __name__ == "__main__":
