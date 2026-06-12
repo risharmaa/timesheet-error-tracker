@@ -157,5 +157,18 @@
         </div>
         </div>
         </div>
+        <!-- get stats about timesheet errors-->
+        <div class="container mt-2">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white d-flex align-items-center">
+            <h5 class="mb-0 fw-bold">Timesheet Error Statistics:</h5>
+            </div>
+            <div class="card-body overflow-auto" style="max-height: 400px;" tabindex="0">
+                <p><b>Total number of Timesheet Errors that still need to be sent: </b>{{count.send}}</p>
+                <p><b>Total number of Timesheet Errors that still need to be closed: </b>{{count.wait}}</p>
+                <p><b>Total Outstanding Timesheet Errors: </b>{{count.outstanding}}</p>
+            </div>
+        </div>
+        </div><br>
     </body>
 </html>

@@ -50,7 +50,21 @@ def index():
     sent = cursor.fetchall()
     cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE")
     waiting = cursor.fetchall()
-    return render_template("home.html", sent = sent, waiting = waiting)
+
+    count = {}
+
+    # get a total number of outstanding timesheets
+    cursor.execute("SELECT COUNT(*) AS outstanding FROM timesheet WHERE (sent = FALSE OR received = FALSE)")
+    a = cursor.fetchone()
+    count['outstanding'] = a['outstanding']
+    cursor.execute("SELECT COUNT(*) AS send FROM timesheet WHERE sent = FALSE AND received = FALSE")
+    a = cursor.fetchone()
+    count['send'] = a['send']
+    cursor.execute("SELECT COUNT(*) AS wait FROM timesheet WHERE sent = TRUE AND received = FALSE")
+    a = cursor.fetchone()
+    count['wait'] = a['wait']
+
+    return render_template("home.html", sent = sent, waiting = waiting, count = count)
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
