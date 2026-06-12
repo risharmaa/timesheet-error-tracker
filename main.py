@@ -785,13 +785,32 @@ def weekly_dashboard():
     last = today
     last_formatted = last.strftime("%A, %B %d, %Y")
 
+    count={}
+
     # get a list of all timesheet errors that have been created within the week
     cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE (sent = FALSE or received = FALSE) AND (date between %s AND %s)", (first, last))
     created = cursor.fetchall()
+    cursor.execute("SELECT COUNT(*) AS count FROM timesheet WHERE (sent = FALSE or received = FALSE) AND (date between %s AND %s)", (first, last))
+    t_o_count = cursor.fetchone()
+    count['week_open'] = t_o_count['count']
 
     # get a list of all timesheet errors that have been closed this week
     cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE received = TRUE AND (day_r between %s AND %s)", (first, last))
     closed = cursor.fetchall()
+    cursor.execute("SELECT COUNT(*) AS count FROM timesheet WHERE sent = TRUE AND received = TRUE AND (day_r between %s AND %s)", (first, last))
+    t_c_count = cursor.fetchone()
+    count['week_closed'] = t_c_count['count']
+
+    # get a total number of outstanding timesheets
+    cursor.execute("SELECT COUNT(*) AS outstanding FROM timesheet WHERE (sent = FALSE OR received = FALSE)")
+    a = cursor.fetchone()
+    count['outstanding'] = a['outstanding']
+    cursor.execute("SELECT COUNT(*) AS send FROM timesheet WHERE sent = FALSE AND received = FALSE")
+    a = cursor.fetchone()
+    count['send'] = a['send']
+    cursor.execute("SELECT COUNT(*) AS wait FROM timesheet WHERE sent = TRUE AND received = FALSE")
+    a = cursor.fetchone()
+    count['wait'] = a['wait']
 
     # get the total count of reasons for all timesheet errors made this week (for a pie chart)
     cursor.execute("SELECT reason, COUNT(*) AS reason_count FROM timesheet WHERE date between %s AND %s GROUP BY reason ORDER BY reason_count DESC", (first, last))
@@ -803,7 +822,7 @@ def weekly_dashboard():
     cursor.execute("SELECT clientid, caregiverid, COUNT(*) AS combo_count, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE date BETWEEN %s AND %s GROUP BY caregiverid, clientid ORDER BY combo_count DESC", (first, last))
     combo = cursor.fetchall()
 
-    return render_template("weekly_dashboard.html", first = first_formatted, last = last_formatted, created = created, closed = closed, reason = reason, combo = combo, reason_labels = reason_labels, reason_values = reason_values)
+    return render_template("weekly_dashboard.html", first = first_formatted, last = last_formatted, created = created, closed = closed, reason = reason, combo = combo, reason_labels = reason_labels, reason_values = reason_values, count = count)
 
 @app.route("/biweeklydashboard")
 def biweekly_dashboard():
@@ -821,13 +840,32 @@ def biweekly_dashboard():
     last = today
     last_formatted = last.strftime("%A, %B %d, %Y")
 
+    count={}
+
     # get a list of all timesheet errors that have been created within the week
     cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE (sent = FALSE or received = FALSE) AND (date between %s AND %s)", (first, last))
     created = cursor.fetchall()
+    cursor.execute("SELECT COUNT(*) AS count FROM timesheet WHERE (sent = FALSE or received = FALSE) AND (date between %s AND %s)", (first, last))
+    t_o_count = cursor.fetchone()
+    count['week_open'] = t_o_count['count']
 
     # get a list of all timesheet errors that have been closed this week
     cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE received = TRUE AND (day_r between %s AND %s)", (first, last))
     closed = cursor.fetchall()
+    cursor.execute("SELECT COUNT(*) AS count FROM timesheet WHERE sent = TRUE AND received = TRUE AND (day_r between %s AND %s)", (first, last))
+    t_c_count = cursor.fetchone()
+    count['week_closed'] = t_c_count['count']
+
+    # get a total number of outstanding timesheets
+    cursor.execute("SELECT COUNT(*) AS outstanding FROM timesheet WHERE (sent = FALSE OR received = FALSE)")
+    a = cursor.fetchone()
+    count['outstanding'] = a['outstanding']
+    cursor.execute("SELECT COUNT(*) AS send FROM timesheet WHERE sent = FALSE AND received = FALSE")
+    a = cursor.fetchone()
+    count['send'] = a['send']
+    cursor.execute("SELECT COUNT(*) AS wait FROM timesheet WHERE sent = TRUE AND received = FALSE")
+    a = cursor.fetchone()
+    count['wait'] = a['wait']
 
     # get the total count of reasons for all timesheet errors made this week (for a pie chart)
     cursor.execute("SELECT reason, COUNT(*) AS reason_count FROM timesheet WHERE date between %s AND %s GROUP BY reason ORDER BY reason_count DESC", (first, last))
@@ -839,7 +877,7 @@ def biweekly_dashboard():
     cursor.execute("SELECT clientid, caregiverid, COUNT(*) AS combo_count, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE date BETWEEN %s AND %s GROUP BY caregiverid, clientid ORDER BY combo_count DESC", (first, last))
     combo = cursor.fetchall()
 
-    return render_template("biweekly_dashboard.html", first = first_formatted, last = last_formatted, created = created, closed = closed, reason = reason, combo = combo, reason_labels = reason_labels, reason_values = reason_values)
+    return render_template("biweekly_dashboard.html", first = first_formatted, last = last_formatted, created = created, closed = closed, reason = reason, combo = combo, reason_labels = reason_labels, reason_values = reason_values, count = count)
 
 
 
