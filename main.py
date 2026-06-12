@@ -353,6 +353,20 @@ def create_timesheet():
         caregiver = request.form.get("caregiver_id")
         reason = request.form.get("reason")
         date = request.form.get("date")
+
+        # check to make sure that the caregiver or client is in the system
+        cursor.execute("SELECT * FROM people WHERE type = 'Client' AND userid = %s", (client,))
+        client_check = cursor.fetchall()
+        if not client_check:
+            flash("This client does not exist in our system.", "danger")
+            return redirect("/createtimesheet")
+        cursor.execute("SELECT * FROM people WHERE type = 'Caregiver' AND userid = %s", (caregiver,))
+        caregiver_check = cursor.fetchall()
+        if not caregiver_check:
+            flash("This caregiver does not exist in our system.", "danger")
+            return redirect("/createtimesheet")
+
+
         cursor.execute("SELECT * FROM timesheet WHERE clientid = %s AND caregiverid = %s AND date = %s", (client, caregiver, date))
         check = cursor.fetchone()
         if check:

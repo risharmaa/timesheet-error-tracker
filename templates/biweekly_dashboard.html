@@ -82,7 +82,7 @@
         <div class="col-12 col-md-6" style="flex: 0 0 auto;">
         <div class="card h-100" style="max-height: 750px;">
         <div class="card-header bg-dark text-white d-flex align-items-center">
-            <h5 class="mb-0 fw-bold">Reasons for Timesheet Errors created this week:</h5>
+            <h5 class="mb-0 fw-bold">Reasons for Timesheet Errors created over these past 2 weeks:</h5>
         </div>
         <div class="card-body" style="max-height: 750px;" tabindex="0">
             {% for r in reason %}
@@ -94,7 +94,7 @@
         <div class="col-12 col-md-6" style="flex: 0 0 auto;">
         <div class="card h-100" style="max-height: 750px;">
         <div class="card-header bg-dark text-white d-flex align-items-center">
-            <h5 class="mb-0 fw-bold">Reasons for Timesheet Errors created this week via pie chart:</h5>
+            <h5 class="mb-0 fw-bold">Reasons for Timesheet Errors created over these past 2 weeks via pie chart:</h5>
         </div>
         <div class="card-body" style="max-height: 750px;" tabindex="0">
             <div style="width: 400px; margin: 10px auto;">
@@ -169,7 +169,7 @@
         <div class="col-12 col-md-6 col-md-4" style="flex: 0 0 auto;">
         <div class="card h-100">
         <div class="card-header bg-info text-white d-flex align-items-center">
-            <h5 class="mb-0 fw-bold">Open Timesheet Errors that were created this week:</h5>
+            <h5 class="mb-0 fw-bold">Open Timesheet Errors that were created these past 2 weeks:</h5>
         </div>
         <div class="card-body overflow-auto" style="max-height: 400px;" tabindex="0">
             {% if created %}
@@ -199,7 +199,7 @@
             {% endfor %}
             </div>
             {% else %}
-            <p>No open Timesheet Errors were created this week.</h3>
+            <p>No open Timesheet Errors were created these past 2 weeks.</h3>
             {% endif %}
         </div>
         </div>
@@ -209,7 +209,7 @@
         <div class="col-12 col-md-6 col-md-4" style="flex: 0 0 auto;">
         <div class="card h-100">
         <div class="card-header bg-success text-white d-flex align-items-center">
-            <h5 class="mb-0 fw-bold">Timesheet Errors that were closed this week:</h5>
+            <h5 class="mb-0 fw-bold">Timesheet Errors that were closed over these past 2 weeks:</h5>
         </div>
         <div class="card-body overflow-auto" style="max-height: 400px;" tabindex="0">
             {% if closed %}
@@ -237,7 +237,7 @@
             {% endfor %}
             </div>
             {% else %}
-            <p>No Timesheets need to be closed.</h3>
+            <p>No Timesheet Errors were closed over these past two weeks.</h3>
             {% endif %}
         </div>
         </div>
