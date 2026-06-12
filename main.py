@@ -230,10 +230,37 @@ def contactList():
         if item["type"] == "Client":
             cursor.execute("SELECT people.fname, people.lname, people.userid, clientid FROM clients INNER JOIN people ON caregiverid = userid WHERE clientid = %s", (item['userid'],))
             item["caregiver"] = cursor.fetchall()
+            cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s ORDER BY date DESC", (item['userid'],))
+            item["sent"] = cursor.fetchall()
+            cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND clientid = %s ORDER BY date DESC", (item['userid'],))
+            item["waiting"] = cursor.fetchall()
+            cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = TRUE AND clientid = %s AND (date BETWEEN %s AND %s) ORDER BY date DESC", (item['userid'], date.today() - timedelta(days=30), date.today()))
+            item["closed"] = cursor.fetchall()
+        if item["type"] == "Caregiver":
+            cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND caregiverid = %s ORDER BY date DESC", (item['userid'],))
+            item["sent"] = cursor.fetchall()
+            cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND caregiverid = %s ORDER BY date DESC", (item['userid'],))
+            item["waiting"] = cursor.fetchall()
+            cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = TRUE AND caregiverid = %s AND (date BETWEEN %s AND %s) ORDER BY date DESC", (item['userid'], date.today() - timedelta(days=30), date.today()))
+            item["closed"] = cursor.fetchall()
     
     for item in client:
         cursor.execute("SELECT people.fname, people.lname, people.userid, clientid FROM clients INNER JOIN people ON caregiverid = userid WHERE clientid = %s", (item['userid'],))
         item["caregiver"] = cursor.fetchall()
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s ORDER BY date DESC", (item['userid'],))
+        item["sent"] = cursor.fetchall()
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND clientid = %s ORDER BY date DESC", (item['userid'],))
+        item["waiting"] = cursor.fetchall()
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = TRUE AND clientid = %s AND (date BETWEEN %s AND %s) ORDER BY date DESC", (item['userid'], date.today() - timedelta(days=30), date.today()))
+        item["closed"] = cursor.fetchall()
+
+    for item in caregiver:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND caregiverid = %s ORDER BY date DESC", (item['userid'],))
+        item["sent"] = cursor.fetchall()
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND caregiverid = %s ORDER BY date DESC", (item['userid'],))
+        item["waiting"] = cursor.fetchall()
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = TRUE AND caregiverid = %s AND (day_r BETWEEN %s AND %s) ORDER BY date DESC", (item['userid'], date.today() - timedelta(days=30), date.today()))            
+        item["closed"] = cursor.fetchall()
 
     return render_template("contact_list.html", contacts = contacts, admin = admin, client = client, caregiver = caregiver)
 

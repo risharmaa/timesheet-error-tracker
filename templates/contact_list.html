@@ -132,27 +132,64 @@
                 <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#allAccordian">
                 <div class="accordion-body">
                 <div class="contact-details">
-                <p>Type of User: {{person.type}}</p>
+                <p><b>Type of User:</b> {{person.type}}</p>
                 {% if person.type == "Client" %}
-                    <p>Email/Phone Number: {{person.userid}}</p>
+                    <p><b>Email/Phone Number:</b> {{person.userid}}</p>
                 {% else %}
-                    <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
+                    <p><b>Email:</b> <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
                 {% endif %}
 
                 {% if person.type == "Client" %}
                     <h3> Caregivers: </h3>
                     <ul>
-                {% if not person['caregiver'] %}
-                    <li>No Caregivers Assigned.</li>
-                {% endif %}
-                {% for c in person['caregiver'] %}
+                    {% if not person['caregiver'] %}
+                    <p>No Caregivers Assigned.</p>
+                    {% endif %}
+                    {% for c in person['caregiver'] %}
                     <li><a href = "mailto:{{c.userid}}">{{c.fname}} {{c.lname}} </a></li>
-                {% endfor %}
-                </ul>
-                <p><a href = "/addcaregiver/{{person.usernum}}"><button class="btn btn-outline-primary">Assign Caregivers</button></a></p>
-            {% endif %}
+                    {% endfor %}
+                    </ul>
+                    <p><a href = "/addcaregiver/{{person.usernum}}"><button class="btn btn-outline-primary">Assign Caregivers</button></a></p>
+                    
+                {% endif %}
+                {% if person.type == "Client" or person.type == "Caregiver" %}
+                    <h3>Timesheet Error Status:</h3>
+                    <h5>Timesheet Errors that need to be sent:</h5>
+                    <ul>
+                    {% if not person['sent'] %}
+                        <p>No Timesheet Errors need to be sent.</p>
+                    {% endif %}
+                    {% for s in person['sent'] %}
+                        <li>{{ s.date }} | {{s.clfname}} {{s.cllname}} & {{s.crfname}} {{s.crlname}} </li>
+                    {% endfor %}
+                    </ul>
+                    <h5>Timesheet Errors that need to be closed:</h5>
+                    <ul>
+                    {% if not person['waiting'] %}
+                        <p>No Timesheet Errors need to be closed.</p>
+                    {% endif %}
+                    {% for w in person['waiting'] %}
+                        <li>{{ w.date }} | {{ w.clfname }} {{ w.cllname }} & {{ w.crfname }} {{ w.crlname }}</li>
+                    {% endfor %}
+                    </ul>
+                    <h5>Timesheet Errors that were closed this month:</h5>
+                    <ul>
+                    {% if not person['closed'] %}
+                        <p>No Timesheet Errors were closed this month.</p>
+                    {% endif %}
+                    {% for c in person['closed'] %}
+                        <li>{{ c.date }} | {{ c.clfname }} {{c.cllname}} & {{ c.crfname }} {{ c.crlname }}</li>
+                    {% endfor %}
+                    </ul>
+                {% endif %}
+                {% if person.type == "Client" %}
+                    <a href="{{ url_for('view_timesheets', client=person.userid, caregiver='', date='') }}"><button class="btn btn-outline-primary">View Timesheet Errors</button></a><br>
+                {% endif %}
+                {% if person.type == "Caregiver" %}
+                    <a href="{{ url_for('view_timesheets', client='', caregiver=person.userid, date='') }}"><button class="btn btn-outline-primary">View Timesheet Errors</button></a><br>
+                {% endif %}
 
-            <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
+            <br><button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
             </ul>
             <script>
             function deleted(name, number) {
@@ -180,8 +217,8 @@
                     <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#adminAccordian">
                     <div class="accordion-body">
                     <div class="contact-details">
-                    <p>Type of User: Admin</p>
-                    <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
+                    <p><b>Type of User:</b> Admin</p>
+                    <p><b>Email:</b> <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
                     <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
                     </ul>
                     <script>
@@ -210,21 +247,51 @@
                     <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#clientAccordian">
                     <div class="accordion-body">
                     <div class="contact-details">
-                    <p>Type of User: Client</p>
-                    <p>Email/Phone Number: {{person.userid}}</p>
+                    <p><b>Type of User:</b> Client</p>
+                    <p><b>Email/Phone Number:</b> {{person.userid}}</p>
     
                     <h3> Caregivers: </h3>
                     <ul>
                     {% if not person['caregiver'] %}
-                        <li>No Caregivers Assigned.</li>
+                        <p>No Caregivers Assigned.</p>
                     {% endif %}
                     {% for c in person['caregiver'] %}
                         <li><a href = "mailto:{{c.userid}}">{{c.fname}} {{c.lname}} </a></li>
                     {% endfor %}
                     </ul>
                     <p><a href = "/addcaregiver/{{person.usernum}}"><button class="btn btn-outline-primary">Assign Caregivers</button></a></p>
+                    <h3>Timesheet Error Status:</h3>
+                    <h5>Timesheet Errors that need to be sent:</h5>
+                    <ul>
+                    {% if not person['sent'] %}
+                        <p>No timesheet Errors need to be sent.</p>
+                    {% endif %}
+                    {% for s in person['sent'] %}
+                        <li>{{ s.date }} | {{ s.clfname }} {{ s.cllname }} & {{ s.crfname }} & {{ s.crlname }} </li>
+                    {% endfor %}
+                    </ul>
+                    <h5>Timesheet Errors that need to be closed:</h5>
+                    <ul>
+                    {% if not person['waiting'] %}
+                        <p>No Timesheet Errors need to be closed.</p>
+                    {% endif %}
+                    {% for w in person['waiting'] %}
+                        <li>{{ w.date }} | {{ w.clfname }} {{ w.cllname }} & {{ w.crfname }} {{ w.crlname }}</li>
+                    {% endfor %}
+                    </ul>
+                    <h5>Timesheet Errors that were closed this month:</h5>
+                    <ul>
+                    {% if not person['closed'] %}
+                        <p>No Timesheet Errors were closed this month.</p>
+                    {% endif %}
+                    {% for c in person['closed'] %}
+                        <li>{{ c.date }} | {{ c.clfname }} {{ c.cllname }} & {{ c.crfname }} {{c.crlname }}</li>
+                    {% endfor %}
+                    </ul>
+                    
+                    <a href="{{ url_for('view_timesheets', client=person.userid, caregiver='', date='') }}"><button class="btn btn-outline-primary">View Timesheet Errors</button></a><br>
 
-                    <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
+                    <br><button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
                     </ul>
                     <script>
                     function deleted(name, number) {
@@ -253,10 +320,40 @@
                     <div id="collapse{{ loop.index }}" class="accordion-collapse collapse" data-bs-parent="#caregiverAccordian">
                     <div class="accordion-body">
                     <div class="contact-details">
-                    <p>Type of User: Caregiver</p>
-                    <p>Email: <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
+                    <p><b>Type of User:</b> Caregiver</p>
+                    <p><b>Email:</b> <a href = "mailto:{{person['userid']}}">{{person.userid}}</a></p>
+                    
+                    <h3>Timesheet Error Status:</h3>
+                    <h5>Timesheet Errors that need to be sent:</h5>
+                    <ul>
+                    {% if not person['sent'] %}
+                        <p>No timesheet Errors need to be sent.</p>
+                    {% endif %}
+                    {% for s in person['sent'] %}
+                        <li>{{ s.date }} | {{ s.clfname }} {{ s.cllname }} & {{ s.crfname }} & {{ s.crlname }} </li>
+                    {% endfor %}
+                    </ul>
+                    <h5>Timesheet Errors that need to be closed:</h5>
+                    <ul>
+                    {% if not person['waiting'] %}
+                        <p>No Timesheet Errors need to be closed.</p>
+                    {% endif %}
+                    {% for w in person['waiting'] %}
+                        <li>{{ w.date }} | {{ w.clfname }} {{ w.cllname }} & {{ w.crfname }} {{ w.crlname }}</li>
+                    {% endfor %}
+                    </ul>
+                    <h5>Timesheet Errors that were closed this month:</h5>
+                    <ul>
+                    {% if not person['closed'] %}
+                        <p>No Timesheet Errors were closed this month.</p>
+                    {% endif %}
+                    {% for c in person['closed'] %}
+                        <li>{{ c.date }} | {{ c.clfname }} {{ c.cllname }} & {{ c.crfname }} {{c.crlname }}</li>
+                    {% endfor %}
+                    </ul>
+                    <a href="{{ url_for('view_timesheets', client='', caregiver=person.userid, date='') }}"><button class="btn btn-outline-primary">View Timesheet Errors</button></a><br>
 
-                    <button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
+                    <br><button onclick="deleted('{{person.fname}} {{person.lname}}', '{{person.usernum}}')" class = "btn btn-danger">Delete User</button>
                     </ul>
                     <script>
                     function deleted(name, number) {

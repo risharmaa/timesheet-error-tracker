@@ -9,6 +9,7 @@ An admin can perform the following tasks:
      - On the homepage, admin can see a list of timesheet errors that need to be sent out or closed.
      - There is a specific "View Timesheet Errors" page where admin can view all timesheet errors that need to be sent, are waiting for a response, or closed.
      - There is a calendar page, where admin can see the day a timesheet error occurred, with events color-coded by their status.
+- View a weekly and bi-weeky dashboard that summarizes what timesheet errors have been made, closed, reasons, and client/caregiver combinations
 
 [**Demo Video**](https://drive.google.com/file/d/1317FOkAJP8hUyfTENrVzBB4Z_Am-c5ID/view?usp=sharing)
 
