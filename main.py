@@ -22,9 +22,10 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 
 mydb = mysql.connector.connect(
-    host=os.getenv("DB_HOST"),
-    user=os.getenv("DB_USER"),
-    database=os.getenv("DB_DB")
+    host=os.getenv("DB_HOST", "127.0.0.1"),
+    user=os.getenv("DB_USER", "root"),
+    password=os.getenv("DB_PASSWORD", ""),
+    database=os.getenv("DB_NAME", "project"),
     buffered=True
 )
 
