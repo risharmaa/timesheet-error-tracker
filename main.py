@@ -21,9 +21,10 @@ from datetime import datetime, timedelta, date
 from werkzeug.security import check_password_hash, generate_password_hash
 
 mydb = mysql.connector.connect(
-    host="127.0.0.1",
-    user="root",
-    database="project",
+    host=os.getenv("DB_HOST"),
+    user=os.getenv("DB_USER),
+    password=os.getenv("DB_PASSWORD"),
+    database=os.getenv("DB_DB"),
     buffered=True
 )
 
