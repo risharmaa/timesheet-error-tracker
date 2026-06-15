@@ -1,5 +1,9 @@
+## Disclaimer
+This project was developed while working with Health & Happiness Home Care LLC. It is published here with permission for portfolio purposes. Please note that proprietary data, internal APIs, and specific company configurations have been redacted or replaced with mock data.
+
 # The Project
-This project details the process of viewing/adding Timesheet Errors, using a locally stored database for Home & Happiness Home Care LLC.
+This project details the process of viewing/adding Timesheet Errors, using a database for Home & Happiness Home Care LLC.
+
 Within the project, there are specific elements.
 
 An admin can perform the following tasks:
