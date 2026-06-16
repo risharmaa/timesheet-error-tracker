@@ -895,6 +895,41 @@ def biweekly_dashboard():
 
     return render_template("biweekly_dashboard.html", first = first_formatted, last = last_formatted, created = created, closed = closed, reason = reason, combo = combo, reason_labels = reason_labels, reason_values = reason_values, count = count)
 
+@app.route("/edituser/<int:usernum>", methods = ["GET", "POST"])
+def edit_user(usernum):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
+    # get userid of the person we're trying to edit info for
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM people WHERE usernum = %s", (usernum,))
+    person = cursor.fetchone()
+
+    if request.method == "POST":
+        # takes in a username and password from a form
+        fname = request.form.get("fname")
+        lname = request.form.get("lname")
+
+        if fname and lname:
+            cursor.execute("UPDATE people SET fname = %s, lname = %s WHERE usernum = %s", (fname, lname, usernum))
+            mydb.commit()
+            flash("Updated user information successfully.", "success")
+            return redirect("/contactlist")
+        if fname:
+            cursor.execute("UPDATE people SET fname = %s WHERE usernum = %s", (fname, usernum))
+            mydb.commit()
+            flash("Updated user information successfully.", "success")
+            return redirect("/contactlist")
+        if lname:
+            cursor.execute("UPDATE people SET lname = %s WHERE usernum = %s", (lname, usernum))
+            mydb.commit()
+            flash("Updated user information successfully.", "success")
+            return redirect("/contactlist")
+
+    return render_template("update_user.html", person = person)
+        
+
 
 
 if __name__ == "__main__":
