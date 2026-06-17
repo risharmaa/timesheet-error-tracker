@@ -3,6 +3,7 @@ import mysql.connector
 import json
 import random
 import string
+import os
 
 from flask import (
     Flask,
@@ -18,7 +19,7 @@ from flask import (
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY")
 
-import os
+
 from datetime import datetime, timedelta, date
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask_mail import Mail, Message
