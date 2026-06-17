@@ -1,6 +1,8 @@
 import mysql
 import mysql.connector 
 import json
+import random
+import string
 
 from flask import (
     Flask,
@@ -14,11 +16,12 @@ from flask import (
 )
 
 app = Flask(__name__)
-app.secret_key = "admin"
+app.secret_key = os.getenv("SECRET_KEY")
 
 import os
 from datetime import datetime, timedelta, date
 from werkzeug.security import check_password_hash, generate_password_hash
+from flask_mail import Mail, Message
 
 
 mydb = mysql.connector.connect(
@@ -30,6 +33,12 @@ mydb = mysql.connector.connect(
 )
 
 app.debug = True
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.getenv("MAIL_USERNAME")
+app.config['MAIL_PASSWORD'] = os.getenv("MAIL_PASSWORD")
 
 #automatically logs out after 5 minutes
 app.permanent_session_lifetime = timedelta(minutes=5)
@@ -84,16 +93,51 @@ def login():
             user["password"] == password
             or check_password_hash(user["password"], password)
         ):
-            session["user"] = {
+            session["test"] = {
                 "fname": user["fname"],
                 "lname": user["lname"],
                 "username": user["userid"]
             }
-            flash("Logged in successfully.", "success")
-            return redirect("/")
+            flash("A verification code has been sent to your email.", "success")
+            code = ''.join(random.choices(string.digits, k=6))
+            session['2fa_code'] = code
+            session['username'] = user["userid"]
+
+            mail = Mail(app)
+
+            msg = Message(
+                subject="Your verification code",
+                sender= app.config['MAIL_USERNAME'],
+                recipients=[session['test']['username']]
+            )
+            msg.body = f"Your verification code is: {code}"   
+            mail.send(msg)
+
+            return redirect("/verify")
         else: # user does not exist/the password is not the same as the one inputted
             flash("Invalid username or password.", "danger")
     return render_template("login.html")
+
+@app.route("/verify", methods=["GET", "POST"])
+def verify():
+    if request.method == "POST":
+        code = request.form.get("code", "").strip()
+        if code == session['2fa_code']:
+            flash("Logged in successfully.", "success")
+            session["user"] = {
+                "fname": session["test"]["fname"],
+                "lname": session["test"]["lname"],
+                "username": session["test"]["lname"]
+            }
+            session.pop('2fa_code', None)
+            session.pop('test', None)
+            return redirect("/")
+        else:
+            session.clear()
+            flash("2FA codes did not match.", "danger")
+            return redirect("/")
+
+    return render_template("2fa.html")
 
 @app.route("/logout")
 def logout():
