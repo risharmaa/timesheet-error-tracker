@@ -132,9 +132,9 @@
             <div id="send" class="container tab-pane active"><br>
                 {% if sent %}
                 <h3>Time sheets that need to be sent:</h3>
-                <button id="toggle-delete" class="btn btn-outline-primary mb-3">Select to Delete</button>
-                <form method="POST" action="/viewtimesheets" id="delete-form">
-                <button id="delete-btn" class="btn btn-danger d-none">Delete Selected</button>
+                <button id="toggle-delete-sent" class="btn btn-outline-primary mb-3">Select to Delete</button>
+                <form method="POST" action="/viewtimesheets" id="delete-form-sent">
+                <button id="delete-btn-sent" class="btn btn-danger d-none">Delete Selected</button>
                 {% else %}
                 <h3>No timesheets need to be sent.</h3>
                 {% endif %}
@@ -161,14 +161,15 @@
                 </div>
                 </div>
                 {% endfor %}
+                </form>
                 </div>
             </div>
             <div id="waiting" class="container tab-pane fade"><br>
                 {% if waiting %}
                 <h3>Timesheets that need to be closed:</h3>
-                <button id="toggle-delete" class="btn btn-outline-primary mb-3">Select to Delete</button>
-                <form method="POST" action="/viewtimesheets" id="delete-form">
-                <button id="delete-btn" class="btn btn-danger d-none">Delete Selected</button>
+                <button id="toggle-delete-waiting" class="btn btn-outline-primary mb-3">Select to Delete</button>
+                <form method="POST" action="/viewtimesheets" id="delete-form-waiting">
+                <button id="delete-btn-waiting" class="btn btn-danger d-none">Delete Selected</button>
                 {% else %}
                 <h3>No timesheets need to be closed.</h3>
                 {% endif %}
@@ -200,9 +201,9 @@
             <div id="closed" class="container tab-pane fade"><br>
                 {% if closed %}
                 <h3>Closed timesheets:</h3>
-                <button id="toggle-delete" class="btn btn-outline-primary mb-3">Select to Delete</button>
-                <form method="POST" action="/viewtimesheets" id="delete-form">
-                <button id="delete-btn" class="btn btn-danger d-none">Delete Selected</button>               
+                <button id="toggle-delete-close" class="btn btn-outline-primary mb-3">Select to Delete</button>
+                <form method="POST" action="/viewtimesheets" id="delete-form-close">
+                <button id="delete-btn-close" class="btn btn-danger d-none">Delete Selected</button>               
                 {% else %}
                 <h3>No timesheets are closed.</h3>
                 {% endif %}
@@ -238,10 +239,48 @@
         </div>
 
         <script>
-            document.getElementById("toggle-delete").addEventListener("click", function() {
+            document.getElementById("toggle-delete-sent").addEventListener("click", function() {
             let checkboxes = document.querySelectorAll(".delete-checkbox");
-            let deleteBtn = document.getElementById("delete-btn");
-            let toggleBtn = document.getElementById("toggle-delete");
+            let deleteBtn = document.getElementById("delete-btn-sent");
+            let toggleBtn = document.getElementById("toggle-delete-sent");
+
+            checkboxes.forEach(cb => {
+                cb.classList.toggle("d-none");
+            });
+
+            deleteBtn.classList.toggle("d-none");
+
+            if (deleteBtn.classList.contains("d-none")) {
+                toggleBtn.innerText = "Select to Delete";
+            } else {
+                toggleBtn.innerText = "Cancel";
+            }
+            });
+        </script>
+        <script>
+            document.getElementById("toggle-delete-waiting").addEventListener("click", function() {
+            let checkboxes = document.querySelectorAll(".delete-checkbox");
+            let deleteBtn = document.getElementById("delete-btn-waiting");
+            let toggleBtn = document.getElementById("toggle-delete-waiting");
+
+            checkboxes.forEach(cb => {
+                cb.classList.toggle("d-none");
+            });
+
+            deleteBtn.classList.toggle("d-none");
+
+            if (deleteBtn.classList.contains("d-none")) {
+                toggleBtn.innerText = "Select to Delete";
+            } else {
+                toggleBtn.innerText = "Cancel";
+            }
+            });
+        </script>
+        <script>
+            document.getElementById("toggle-delete-close").addEventListener("click", function() {
+            let checkboxes = document.querySelectorAll(".delete-checkbox");
+            let deleteBtn = document.getElementById("delete-btn-close");
+            let toggleBtn = document.getElementById("toggle-delete-close");
 
             checkboxes.forEach(cb => {
                 cb.classList.toggle("d-none");
