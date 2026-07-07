@@ -95,12 +95,14 @@
                                 {% elif timesheet.color == '#FDBE02' %}
                                     status: 'Awaiting Response',
                                     close: '/calendar/closetimesheet/{{timesheet.num}}',
-                                    delete: '/calendar/deletetimesheet/{{timesheet.num}}'
+                                    delete: '/calendar/deletetimesheet/{{timesheet.num}}',
+                                    undo:   '/calendar/undo/{{timesheet.num}}'
                                 {% else %}
                                     status: 'Closed',
                                     day_r: '{{timesheet.day_r}}',
                                     method: '{{timesheet.type}}',
-                                    delete: '/calendar/deletetimesheet/{{timesheet.num}}'
+                                    delete: '/calendar/deletetimesheet/{{timesheet.num}}',
+                                    undo:   '/calendar/undo/{{timesheet.num}}'
                                 {% endif %}
                             }
                         }
@@ -128,7 +130,7 @@
                     let closeContainer = document.getElementById('modalClose');
                     if (props.close) {
                         closeContainer.innerHTML = 
-                            `<a href="${props.close}"><button class = "btn btn-outline-success">Close Timesheet Error</button></a> <a href="${props.delete}"><button class = "btn btn-outline-danger">Delete Timesheet Error</button></a>`;;
+                            `<a href="${props.close}"><button class = "btn btn-outline-success">Close Timesheet Error</button></a> <a href="${props.delete}"><button class = "btn btn-outline-danger">Delete Timesheet Error</button></a> <a href="${props.undo}"><button class = "btn btn-outline-secondary">Revert Timesheet Error to Not Sent</button></a>`;;
                     } else {
                         closeContainer.innerHTML = '';
                     }
@@ -138,7 +140,7 @@
                     if (closedDetailsContainer) {
                         if (props.status === 'Closed') {
                             closedDetailsContainer.innerHTML = 
-                                `<p><b>Day Received:</b> ${props.day_r}</p><p><b>Received via:</b> ${props.method}</p> <a href="${props.delete}"><button class = "btn btn-outline-danger">Delete Timesheet Error</button></a>`;;
+                                `<p><b>Day Received:</b> ${props.day_r}</p><p><b>Received via:</b> ${props.method}</p> <a href="${props.delete}"><button class = "btn btn-outline-danger">Delete Timesheet Error</button></a> <a href="${props.undo}"><button class = "btn btn-outline-secondary">Revert Timesheet Error to Waiting</button></a>`;;
                         } else {
                             closedDetailsContainer.innerHTML = '';
                         }

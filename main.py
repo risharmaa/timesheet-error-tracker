@@ -973,7 +973,72 @@ def edit_user(usernum):
             return redirect("/contactlist")
 
     return render_template("update_user.html", person = person)
-        
+
+@app.route("/undo/<int:num>")
+def undo_status(num):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
+    # get status of timesheet error
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM timesheet WHERE num = %s", (num,))
+    status = cursor.fetchone()
+    
+    # if waiting:
+    if status['sent'] and not status['received']:
+        cursor.execute("UPDATE timesheet SET sent = 0 WHERE num = %s", (num,))
+        flash("Your timesheet error status has been updated to 'Not Sent'.", "success")
+    elif status['sent'] and status['received']:
+        cursor.execute("UPDATE timesheet SET sent = 1, received = 0, type = NULL, day_r = NULL WHERE num = %s", (num,))
+        flash("Your timesheet error status has been updated to 'Waiting'.", "success")
+    mydb.commit()
+
+    return redirect("/viewtimesheets")
+
+@app.route("/home/undo/<int:num>")
+def home_undo_status(num):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
+    # get status of timesheet error
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM timesheet WHERE num = %s", (num,))
+    status = cursor.fetchone()
+    
+    # if waiting:
+    if status['sent'] and not status['received']:
+        cursor.execute("UPDATE timesheet SET sent = 0 WHERE num = %s", (num,))
+        flash("Your timesheet error status has been updated to 'Not Sent'.", "success")
+    elif status['sent'] and status['received']:
+        cursor.execute("UPDATE timesheet SET sent = 1, received = 0, type = NULL, day_r = NULL WHERE num = %s", (num,))
+        flash("Your timesheet error status has been updated to 'Waiting'.", "success")
+    mydb.commit()
+
+    return redirect("/")
+
+@app.route("/calendar/undo/<int:num>")
+def calendar_undo_status(num):
+    # check if user is logged in:
+    if 'user' not in session:
+        return redirect("/login")
+
+    # get status of timesheet error
+    cursor = mydb.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM timesheet WHERE num = %s", (num,))
+    status = cursor.fetchone()
+    
+    # if waiting:
+    if status['sent'] and not status['received']:
+        cursor.execute("UPDATE timesheet SET sent = 0 WHERE num = %s", (num,))
+        flash("Your timesheet error status has been updated to 'Not Sent'.", "success")
+    elif status['sent'] and status['received']:
+        cursor.execute("UPDATE timesheet SET sent = 1, received = 0, type = NULL, day_r = NULL WHERE num = %s", (num,))
+        flash("Your timesheet error status has been updated to 'Waiting'.", "success")
+    mydb.commit()
+
+    return redirect("/calendar")
 
 
 
