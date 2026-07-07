@@ -506,13 +506,28 @@ def view_timesheets():
     client = request.args.get('client')
     caregiver = request.args.get('caregiver')
     search_date = request.args.get('date')
+    method = request.args.get('method')
+
+    if method == "name":
+        alphabetical = True
+    else:
+        alphabetical = False
 
     #get today's date to limit all closed timesheets to be within the year
     today = date.today()
     first = today - timedelta(days=365)
     last = today
 
-    if client and caregiver and search_date:
+    if client and caregiver and search_date and alphabetical:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s AND caregiverid = %s AND date = %s ORDER BY clfname, cllname, date DESC", (client, caregiver, search_date))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND clientid = %s AND caregiverid = %s AND date = %s ORDER BY clfname, cllname, date DESC", (client, caregiver, search_date))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND clientid = %s AND caregiverid = %s AND date = %s AND (date BETWEEN %s AND %s) ORDER BY clfname, cllname, date DESC", (client, caregiver, search_date, first, last))
+        closed = cursor.fetchall()
+    elif client and caregiver and search_date:
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s AND caregiverid = %s AND date = %s ORDER BY date DESC", (client, caregiver, search_date))
         sent = cursor.fetchall()
 
@@ -520,6 +535,15 @@ def view_timesheets():
         waiting = cursor.fetchall()
 
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND clientid = %s AND caregiverid = %s AND date = %s AND (date BETWEEN %s AND %s) ORDER BY date DESC", (client, caregiver, search_date, first, last))
+        closed = cursor.fetchall()
+    elif client and caregiver and alphabetical:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s AND caregiverid = %s ORDER BY clfname, cllname, date DESC", (client, caregiver))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND clientid = %s AND caregiverid = %s ORDER BY clfname, cllname, date DESC", (client, caregiver))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND clientid = %s AND caregiverid = %s AND (date BETWEEN %s AND %s) ORDER BY clfname, cllname, date DESC", (client, caregiver))
         closed = cursor.fetchall()
     elif client and caregiver:
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s AND caregiverid = %s ORDER BY date DESC", (client, caregiver))
@@ -539,6 +563,24 @@ def view_timesheets():
 
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND clientid = %s AND date = %s AND (date BETWEEN %s AND %s) ORDER BY date DESC", (client, search_date, first, last))
         closed = cursor.fetchall()
+    elif client and search_date and alphabetical:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s AND date = %s ORDER BY clfname, cllname, date DESC", (client, search_date))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND clientid = %s AND date = %s ORDER BY clfname, cllname, date DESC", (client, search_date))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND clientid = %s AND date = %s AND (date BETWEEN %s AND %s) ORDER BY clfname, cllname, date DESC", (client, search_date, first, last))
+        closed = cursor.fetchall()
+    elif caregiver and search_date and alphabetical:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND caregiverid = %s AND date = %s ORDER BY clfname, cllname, date DESC", (caregiver, search_date))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND caregiverid = %s AND date = %s ORDER BY clfname, cllname, date DESC", (caregiver, search_date))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND caregiverid = %s AND date = %s AND (date BETWEEN %s AND %s) ORDER BY clfname, cllname, date DESC", (caregiver, search_date, first, last))
+        closed = cursor.fetchall()
     elif caregiver and search_date:
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND caregiverid = %s AND date = %s ORDER BY date DESC", (caregiver, search_date))
         sent = cursor.fetchall()
@@ -547,6 +589,15 @@ def view_timesheets():
         waiting = cursor.fetchall()
 
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND caregiverid = %s AND date = %s AND (date BETWEEN %s AND %s) ORDER BY date DESC", (caregiver, search_date, first, last))
+        closed = cursor.fetchall()
+    elif client and alphabetical:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s ORDER BY clfname, cllname, date DESC", (client,))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND clientid = %s ORDER BY clfname, cllname, date DESC", (client,))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND clientid = %s AND (date BETWEEN %s AND %s) ORDER BY clfname, cllname, date DESC", (client, first, last))
         closed = cursor.fetchall()
     elif client:
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND clientid = %s ORDER BY date DESC", (client,))
@@ -557,6 +608,15 @@ def view_timesheets():
 
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND clientid = %s AND (date BETWEEN %s AND %s) ORDER BY date DESC", (client, first, last))
         closed = cursor.fetchall()
+    elif caregiver and alphabetical:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND caregiverid = %s ORDER BY clfname, cllname, date DESC", (caregiver,))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND caregiverid = %s ORDER BY clfname, cllname, date DESC", (caregiver,))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND caregiverid = %s AND (date BETWEEN %s AND %s) ORDER BY clfname, cllname, date DESC", (caregiver, first, last))
+        closed = cursor.fetchall()
     elif caregiver:
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND caregiverid = %s ORDER BY date DESC", (caregiver,))
         sent = cursor.fetchall()
@@ -566,6 +626,15 @@ def view_timesheets():
 
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND caregiverid = %s AND (date BETWEEN %s AND %s) ORDER BY date DESC", (caregiver, first, last))
         closed = cursor.fetchall()
+    elif search_date and alphabetical:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND date = %s ORDER BY clfname, cllname, date DESC", (search_date,))
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE AND date = %s ORDER BY clfname, cllname, date DESC", (search_date,))
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND date = %s AND (date BETWEEN %s AND %s) ORDER BY clfname, cllname, date DESC", (search_date, first, last))
+        closed = cursor.fetchall()
     elif search_date:
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE AND received = FALSE AND date = %s ORDER BY date DESC", (search_date,))
         sent = cursor.fetchall()
@@ -574,6 +643,15 @@ def view_timesheets():
         waiting = cursor.fetchall()
 
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND date = %s AND (date BETWEEN %s AND %s) ORDER BY date DESC", (search_date, first, last))
+        closed = cursor.fetchall()
+    elif alphabetical:
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE ORDER BY clfname, cllname, date DESC")
+        sent = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE AND received = FALSE ORDER BY clfname, cllname, date DESC")
+        waiting = cursor.fetchall()
+
+        cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = TRUE and received = TRUE AND (date BETWEEN %s AND %s) ORDER BY clfname, cllname, date DESC", (first, last))
         closed = cursor.fetchall()
     else:
         cursor.execute("SELECT timesheet.*, client.fname AS clfname, client.lname AS cllname, caregiver.fname AS crfname, caregiver.lname AS crlname FROM timesheet INNER JOIN people AS client ON timesheet.clientid = client.userid INNER JOIN people AS caregiver ON timesheet.caregiverid = caregiver.userid WHERE sent = FALSE ORDER BY date DESC")
